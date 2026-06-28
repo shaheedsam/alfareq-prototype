@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Presentation Hub · Employee Registration Prototypes</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', "Segoe UI", system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      color: #334155;
+      background: #f1f5f9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+      color: #ffffff;
+      padding: 40px 24px;
+      text-align: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      color: #93c5fd;
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    main {
+      flex: 1;
+      max-width: 1000px;
+      width: 100%;
+      margin: 32px auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 8px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: #3b82f6;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      border-color: #cbd5e1;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon {
+      font-size: 24px;
+      margin-bottom: 16px;
+      background: #eff6ff;
+      color: #3b82f6;
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      flex: 1;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .tag-blue {
+      background: #eff6ff;
+      color: #1e40af;
+    }
+
+    .tag-green {
+      background: #ecfdf5;
+      color: #065f46;
+    }
+
+    .card-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #1e3a8a;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .card-btn:hover {
+      background: #1d4ed8;
+    }
+
+    /* IIS Hosting Instructions Box */
+    .iis-guide {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    .guide-step {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 16px;
+    }
+
+    .guide-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      background: #1e3a8a;
+      color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 13px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-text h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+
+    .step-text p {
+      color: #64748b;
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+
+    .code-block {
+      background: #f1f5f9;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      display: inline-block;
+      margin: 4px 0;
+    }
+
+    footer {
+      background: #0f172a;
+      color: #64748b;
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+      border-top: 1px solid #1e293b;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-content">
+      <h1>Employee Registration Prototypes</h1>
+      <p>Interactive client presentation dashboard and portal</p>
+    </div>
+  </header>
+
+  <main>
+    <div>
+      <h2 class="section-title">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+          </path>
+        </svg>
+        Available Prototypes
+      </h2>
+      <div class="cards-grid">
+
+        <!-- Card 1 -->
+        <div class="card">
+          <div class="card-icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <h3 class="card-title">Bilingual Grid Form</h3>
+          <p class="card-desc">
+            A single-page form designed for dual-language data entry. Features parallel English and Arabic fields,
+            synchronized values, instant validation, and person lookups. Field widths are completely uniform and
+            aligned.
+          </p>
+          <div class="card-tags">
+            <span class="tag tag-blue">Bilingual Grid</span>
+            <span class="tag tag-green">Responsive CSS</span>
+            <span class="tag">Form Validation</span>
+          </div>
+          <a href="employee_registration_form.html" class="card-btn">
+            Open Prototype
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <div class="card-icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+              </path>
+            </svg>
+          </div>
+          <h3 class="card-title">Step-by-Step Wizard</h3>
+          <p class="card-desc">
+            A modern, multi-step wizard prototype guiding users sequentially through identity lookup, personal
+            information entry, employment details, and a final confirmation review page.
+          </p>
+          <div class="card-tags">
+            <span class="tag tag-blue">Wizard UI</span>
+            <span class="tag tag-green">Client-side Routing</span>
+            <span class="tag">Multi-step</span>
+          </div>
+          <a href="unified_employee_registration_prototype.html" class="card-btn">
+            Open Prototype
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div>
+      <h2 class="section-title">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 9.172V5L8 4z">
+          </path>
+        </svg>
+        IIS Hosting Setup Guide
+      </h2>
+      <div class="iis-guide">
+        <div class="guide-step">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <h4>Locate the Project Folder</h4>
+            <p>Ensure all your prototype files (like <code>index.html</code>,
+              <code>employee_registration_form.html</code>, and
+              <code>unified_employee_registration_prototype.html</code>) are kept in a single directory on your machine.
+              Currently they are located at:</p>
+            <div class="code-block">D:\Activities\Experiments</div>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <h4>Open IIS Manager</h4>
+            <p>Press <kbd>Win + R</kbd>, type <code
+                style="background:#f1f5f9;padding:2px 4px;border-radius:4px">inetmgr</code>, and press Enter to launch
+              the Internet Information Services (IIS) Manager.</p>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <h4>Create a New Website or Application</h4>
+            <p>In the left Connections panel, expand your server node, right-click on <strong>Sites</strong>, and select
+              <strong>Add Website...</strong>.</p>
+            <p>Fill in the settings:</p>
+            <ul style="margin-left: 20px; color: #64748b; line-height: 1.6; list-style-type: square;">
+              <li><strong>Site name:</strong> <code>EmployeePrototypes</code></li>
+              <li><strong>Physical path:</strong> <code>D:\Activities\Experiments</code></li>
+              <li><strong>Binding Port:</strong> Choose an open port (e.g. <code>8082</code> or <code>8888</code>) to
+                avoid conflicts.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <h4>Verify and Present</h4>
+            <p>Click <strong>OK</strong> to start the site. Open your web browser and navigate to:</p>
+            <div class="code-block">http://localhost:8082</div>
+            <p>Your client can now see the presentation hub directly on the local network using your machine's local IP
+              address (e.g. <code>http://192.168.x.x:8082</code>).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Employee Registration Prototypes Portal · IT - DGHS Muscat</p>
+  </footer>
+
+</body>
+
+</html>
