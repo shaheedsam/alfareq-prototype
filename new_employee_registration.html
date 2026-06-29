@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Registration</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  /* ── Minimal overrides only — all layout is Bootstrap ── */
+  body { background: #f0f2f5; font-size: 13px; }
+
+  /* Search bar */
+  .search-bar { background: #3a9fd8; }
+  .search-bar .form-label { color: rgba(255,255,255,.88); font-size: 11px; margin-bottom: 3px; }
+  .search-bar .form-control { background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.35); color: #fff; font-size: 12px; height: 32px; padding: 0 9px; }
+  .search-bar .form-control::placeholder { color: rgba(255,255,255,.5); }
+  .search-bar .form-control:focus { background: rgba(255,255,255,.28); border-color: #fff; box-shadow: none; }
+
+  /* Found banner */
+  #found-banner { background: #d9edf7; border-bottom: 1px solid #bce8f1; color: #31708f; font-size: 12px; }
+
+  /* Tabs — Bootstrap nav-tabs override to match existing blue style */
+  .nav-tabs { background: #f8f9fb; border-bottom: 1px solid #dde3ea; padding: 0 8px; }
+  .nav-tabs .nav-link { color: #777; font-size: 13px; border: none; border-bottom: 2px solid transparent; border-radius: 0; padding: 10px 20px; }
+  .nav-tabs .nav-link:hover { color: #3a9fd8; border-color: transparent; }
+  .nav-tabs .nav-link.active { color: #3a9fd8; border-bottom: 2px solid #3a9fd8; background: transparent; font-weight: 500; }
+
+  /* Section label */
+  .sec-label { font-size: 11px; font-weight: 600; color: #3a9fd8; text-transform: uppercase; letter-spacing: .05em; }
+
+  /*
+    Field row pattern:
+    [en-label col] [control col] [ar-label col]
+
+    Using Bootstrap grid inside each row:
+    - EN label:  col-auto  text-end  fixed ~130px
+    - Control:   col        (fills remaining)
+    - AR label:  col-auto  text-start  fixed ~130px  RTL text
+
+    All rows use the SAME column widths → uniform alignment.
+  */
+
+  /* EN label column */
+  .lbl-en {
+    width: 130px;
+    font-size: 12px;
+    color: #444;
+    text-align: right;
+    padding-right: 8px;
+    white-space: nowrap;
+  }
+
+  /* AR label column — sits to the RIGHT of its field */
+  .lbl-ar {
+    width: 130px;
+    font-size: 12px;
+    color: #888;
+    text-align: left;
+    padding-left: 8px;
+    white-space: nowrap;
+    direction: rtl;
+  }
+
+  /* Bootstrap form-control / form-select tweaks */
+  .form-control, .form-select {
+    background-color: #f4f6f8;
+    border-color: #ccc;
+    font-size: 12px;
+    height: 32px;
+    padding: 0 10px;
+  }
+  .form-select { padding-right: 28px; }
+  .form-control:focus, .form-select:focus {
+    background: #fff;
+    border-color: #3a9fd8;
+    box-shadow: 0 0 0 2px rgba(58,159,216,.15);
+  }
+  .form-control.is-invalid, .form-select.is-invalid {
+    border-color: #dc3545;
+    background-color: #fff5f5;
+  }
+  /* Hide Bootstrap's default invalid feedback icon inside select */
+  .form-select.is-invalid { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); }
+
+  /* Field row spacing */
+  .field-row { margin-bottom:6px; gap:10px; }
+.field-row>.form-control,.field-row>.form-select{flex:1 1 0;min-width:180px;}
+
+  /* Civil ID row — centred */
+  .civil-row { justify-content: center; }
+  .civil-row .civil-ctrl { width: 220px; flex: none; }
+
+  /* AR select — RTL text */
+  .form-select[dir=rtl] { text-align: right; direction: rtl; }
+
+  /* Qualification table */
+  .qual-table th { font-size: 12px; font-weight: 500; color: #555; background: #f0f4f8; white-space: nowrap; }
+  .qual-table td { font-size: 12px; vertical-align: middle; }
+  .qual-empty { color: #bbb; font-style: italic; font-size: 12px; }
+  .inst-badge { font-size: 11px; }
+
+  /* Action bar */
+  .action-bar { background: #f8f9fb; border-top: 1px solid #dde3ea; }
+
+  /* Row separator — very light dashed */
+  .field-row + .field-row { border-top: 1px dashed #f0f0f0; }
+</style>
+</head>
+<body>
+
+<!-- ── Search bar ── -->
+<div class="search-bar px-3 py-2">
+  <div class="row g-2 align-items-end">
+    <div class="col">
+      <label class="form-label">Person #</label>
+      <input type="text" class="form-control" id="s-person">
+    </div>
+    <div class="col">
+      <label class="form-label">Civil ID</label>
+      <input type="text" class="form-control" id="s-civil" placeholder="e.g. 10753522">
+    </div>
+    <div class="col">
+      <label class="form-label">Mobile</label>
+      <input type="text" class="form-control" id="s-mobile" placeholder="e.g. 99214668">
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-light btn-sm fw-semibold" style="height:32px;color:#1a7ab5;font-size:12px" onclick="doLoad()">
+        &#128269; LOAD DETAILS
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Found banner -->
+<div id="found-banner" class="d-none px-3 py-2 d-flex align-items-center gap-2">
+  <span>&#10003;</span>
+  <span id="found-text"></span>
+  <span class="ms-auto" style="font-size:11px;opacity:.8">Existing person · New employee record will be linked</span>
+</div>
+
+<!-- ── Card ── -->
+<div class="card mx-3 my-3 shadow-sm border" style="border-color:#dde3ea!important;border-radius:6px;overflow:hidden">
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs" id="mainTabs">
+    <li class="nav-item"><a class="nav-link active" data-tab="1" onclick="goTab(1,this)">Basic Information / المعلومات الأساسية</a></li>
+    <li class="nav-item"><a class="nav-link" data-tab="2" onclick="goTab(2,this)">Other Information / معلومات أخرى</a></li>
+    <li class="nav-item"><a class="nav-link" data-tab="3" onclick="goTab(3,this)">Qualification / المؤهلات</a></li>
+  </ul>
+
+  <!-- ════ TAB 1 ════ -->
+  <div id="tp1" class="tab-pane-custom">
+    <div class="px-3 pt-2 pb-1">
+      <span class="sec-label">Basic Information / المعلومات الأساسية</span>
+    </div>
+    <div class="px-3 pb-3">
+
+      <!-- Civil ID — centred -->
+      <div class="field-row d-flex align-items-center civil-row py-1">
+        <span class="lbl-en">Civil ID <span class="text-danger">*</span></span>
+        <input type="text" class="form-control civil-ctrl" id="civil-id" placeholder="123456789">
+        <span class="lbl-ar">الرقم المدني</span>
+      </div>
+
+      <!-- Date of join | Staff # -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Date of join <span class="text-danger">*</span></span>
+        <input type="date" class="form-control" id="join-date">
+        <span class="lbl-ar">تاريخ التعيين</span>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">Staff # <span class="text-danger">*</span></span>
+        <input type="text" class="form-control" id="staff-num" placeholder="12345">
+        <span class="lbl-ar">الرقم الوظيفي</span>
+      </div>
+
+      <!-- Date of birth | Mawred # -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Date of birth <span class="text-danger">*</span></span>
+        <input type="date" class="form-control" id="dob">
+        <span class="lbl-ar">تاريخ الميلاد</span>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">Mawred # <span class="text-danger">*</span></span>
+        <input type="text" class="form-control" id="mawred" placeholder="123456">
+        <span class="lbl-ar">رقم المورد</span>
+      </div>
+
+      <!-- Name EN | Name AR -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Name <span class="text-danger">*</span></span>
+        <input type="text" class="form-control text-uppercase" id="name-en" placeholder="ALI ABDULLAH HAMDAN AL NASSERI">
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span><input type="text" class="form-control text-end" id="name-ar" dir="rtl" placeholder="علي بن عبدالله بن حمدان الناصري">
+        <span class="lbl-ar">الاسم بالعربية</span>
+      </div>
+
+      <!-- Category -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Category <span class="text-danger">*</span></span>
+        <select class="form-select" id="category" onchange="sync('category','category-ar')">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Medical</option><option>Nursing</option><option>Allied Health</option><option>Administrative</option><option>Support</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span>
+        <select class="form-select" id="category-ar" dir="rtl" onchange="sync('category-ar','category')">
+          <option value="">إختر</option>
+          <option>طبي</option><option>تمريض</option><option>صحة مساندة</option><option>إداري</option><option>دعم</option>
+        </select>
+        <span class="lbl-ar">الفئة الوظيفية</span>
+      </div>
+
+      <!-- Designation -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Designation <span class="text-danger">*</span></span>
+        <select class="form-select" id="designation" onchange="sync('designation','designation-ar')">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Doctor</option><option>Nurse</option><option>Technician</option><option>Administrator</option><option>Other</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span><select class="form-select" id="designation-ar" dir="rtl" onchange="sync('designation-ar','designation')">
+          <option value="">إختر</option>
+          <option>طبيب</option><option>ممرض</option><option>تقني</option><option>إداري</option><option>أخرى</option>
+        </select>
+        <span class="lbl-ar">المسمى الوظيفي</span>
+      </div>
+
+      <!-- Position -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Position <span class="text-danger">*</span></span>
+        <select class="form-select" id="position" onchange="sync('position','position-ar')">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Head of Department</option><option>Senior</option><option>Junior</option><option>Intern</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span><select class="form-select" id="position-ar" dir="rtl" onchange="sync('position-ar','position')">
+          <option value="">إختر</option>
+          <option>رئيس قسم</option><option>أول</option><option>ثانٍ</option><option>متدرب</option>
+        </select>
+        <span class="lbl-ar">المنصب</span>
+      </div>
+
+      <!-- Gender -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Gender <span class="text-danger">*</span></span>
+        <select class="form-select" id="gender" onchange="sync('gender','gender-ar')">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Male</option><option>Female</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span><select class="form-select" id="gender-ar" dir="rtl" onchange="sync('gender-ar','gender')">
+          <option value="">إختر</option>
+          <option>ذكر</option><option>أنثى</option>
+        </select>
+        <span class="lbl-ar">الجنس</span>
+      </div>
+
+      <!-- Nationality -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Nationality <span class="text-danger">*</span></span>
+        <select class="form-select" id="nationality" onchange="sync('nationality','nationality-ar')">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Omani</option><option>Other</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span><select class="form-select" id="nationality-ar" dir="rtl" onchange="sync('nationality-ar','nationality')">
+          <option value="">إختر</option>
+          <option>عُماني</option><option>أخرى</option>
+        </select>
+        <span class="lbl-ar">الجنسية</span>
+      </div>
+
+      <!-- Department -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Department <span class="text-danger">*</span></span>
+        <select class="form-select" id="department" onchange="sync('department','department-ar')">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Emergency</option><option>Paediatrics</option><option>Surgery</option><option>Radiology</option><option>Internal Medicine</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span><select class="form-select" id="department-ar" dir="rtl" onchange="sync('department-ar','department')">
+          <option value="">إختر</option>
+          <option>الطوارئ</option><option>طب الأطفال</option><option>الجراحة</option><option>الأشعة</option><option>الباطنية</option>
+        </select>
+        <span class="lbl-ar">الدائرة</span>
+      </div>
+
+      <!-- Section -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Section <span class="text-danger">*</span></span>
+        <select class="form-select" id="section" onchange="sync('section','section-ar')">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Section A</option><option>Section B</option><option>Section C</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span><select class="form-select" id="section-ar" dir="rtl" onchange="sync('section-ar','section')">
+          <option value="">إختر</option>
+          <option>قسم أ</option><option>قسم ب</option><option>قسم ج</option>
+        </select>
+        <span class="lbl-ar">القسم</span>
+      </div>
+
+      <!-- Grade -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Grade <span class="text-danger">*</span></span>
+        <select class="form-select" id="grade" onchange="sync('grade','grade-ar')">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option><option>Grade 5</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span><select class="form-select" id="grade-ar" dir="rtl" onchange="sync('grade-ar','grade')">
+          <option value="">إختر</option>
+          <option>درجة 1</option><option>درجة 2</option><option>درجة 3</option><option>درجة 4</option><option>درجة 5</option>
+        </select>
+        <span class="lbl-ar">الدرجة</span>
+      </div>
+
+      <!-- Budget -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Budget <span class="text-danger">*</span></span>
+        <select class="form-select" id="budget" onchange="sync('budget','budget-ar')">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Ministry</option><option>Self-funded</option><option>Project</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span><select class="form-select" id="budget-ar" dir="rtl" onchange="sync('budget-ar','budget')">
+          <option value="">إختر</option>
+          <option>وزارة</option><option>ذاتي</option><option>مشروع</option>
+        </select>
+        <span class="lbl-ar">الموازنة</span>
+      </div>
+
+      <!-- Status -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Status <span class="text-danger">*</span></span>
+        <select class="form-select" id="status" onchange="sync('status','status-ar')">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Active</option><option>Inactive</option><option>On Leave</option><option>Terminated</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span><select class="form-select" id="status-ar" dir="rtl" onchange="sync('status-ar','status')">
+          <option value="">إختر</option>
+          <option>نشط</option><option>غير نشط</option><option>في إجازة</option><option>منتهي</option>
+        </select>
+        <span class="lbl-ar">الحالة</span>
+      </div>
+
+    </div>
+    <div id="err1" class="alert alert-danger py-1 px-3 mx-3 mb-2 d-none" style="font-size:12px"></div>
+    <div class="action-bar d-flex justify-content-between align-items-center px-3 py-2">
+      <small class="text-muted"><span class="text-danger">*</span> All fields are mandatory</small>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-secondary btn-sm" onclick="clearAll()">Clear</button>
+        <button class="btn btn-primary btn-sm" onclick="nextTab(1)">Next &raquo;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ TAB 2 ════ -->
+  <div id="tp2" class="tab-pane-custom d-none">
+    <div class="px-3 pt-2 pb-1">
+      <span class="sec-label">Other Information / معلومات أخرى</span>
+    </div>
+    <div class="px-3 pb-3">
+
+      <!-- Marital Status -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Marital Status <span class="text-danger">*</span></span>
+        <select class="form-select" id="marital" onchange="sync('marital','marital-ar')">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Single</option><option>Married</option><option>Divorced</option><option>Widowed</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span>
+        <select class="form-select" id="marital-ar" dir="rtl" onchange="sync('marital-ar','marital')">
+          <option value="">إختر</option>
+          <option>أعزب</option><option>متزوج</option><option>مطلق</option><option>أرمل</option>
+        </select>
+        <span class="lbl-ar">الحالة الاجتماعية</span>
+      </div>
+
+      <!-- Religion -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Religion <span class="text-danger">*</span></span>
+        <select class="form-select" id="religion" onchange="sync('religion','religion-ar')">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Islam</option><option>Christianity</option><option>Other</option>
+        </select>
+          <div style="width:24px;flex-shrink:0"></div>
+          <span class="lbl-en">&nbsp;</span>
+          <span class="lbl-ar">&nbsp;</span>
+          <select class="form-select" id="religion-ar" dir="rtl" onchange="sync('religion-ar','religion')">
+            <option value="">إختر</option>
+            <option>الإسلام</option><option>المسيحية</option><option>أخرى</option>
+          </select>
+          <span class="lbl-ar">الديانة</span>
+      </div>
+
+      <!-- Governorate -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Governorate <span class="text-danger">*</span></span>
+        <select class="form-select" id="gov" onchange="sync('gov','gov-ar');updateArea()">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Muscat</option><option>Dhofar</option><option>Batinah North</option><option>Batinah South</option><option>Dakhliyah</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span>
+        <select class="form-select" id="gov-ar" dir="rtl" onchange="sync('gov-ar','gov');updateArea()">
+          <option value="">إختر</option>
+          <option>مسقط</option><option>ظفار</option><option>شمال الباطنة</option><option>جنوب الباطنة</option><option>الداخلية</option>
+        </select>
+        <span class="lbl-ar">المحافظة</span>
+      </div>
+
+      <!-- Area -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Area <span class="text-danger">*</span></span>
+        <select class="form-select" id="area"><option value="">&lt;&lt; SELECT &gt;&gt;</option></select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span>
+        <select class="form-select" id="area-ar" dir="rtl"><option value="">إختر</option></select>
+        <span class="lbl-ar">الولاية</span>
+      </div>
+
+      <!-- Subarea -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Subarea <span class="text-danger">*</span></span>
+        <select class="form-select" id="subarea" onchange="sync('subarea','subarea-ar')">
+          <option value="">&lt;&lt; SELECT &gt;&gt;</option>
+          <option>Block A</option><option>Block B</option><option>Block C</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span>
+        <select class="form-select" id="subarea-ar" dir="rtl" onchange="sync('subarea-ar','subarea')">
+          <option value="">إختر</option>
+          <option>حي أ</option><option>حي ب</option><option>حي ج</option>
+        </select>
+        <span class="lbl-ar">المنطقة</span>
+      </div>
+
+      <!-- Emergency phone | Phone -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Emergency phone <span class="text-danger">*</span></span>
+        <input type="tel" class="form-control" id="emergency-phone" placeholder="99999999">
+        <span class="lbl-ar">هاتف الطوارئ</span>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">Phone <span class="text-danger">*</span></span>
+        <input type="tel" class="form-control" id="phone" placeholder="99999999">
+        <span class="lbl-ar">الهاتف</span>
+      </div>
+
+      <!-- Email -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Email <span class="text-danger">*</span></span>
+        <input type="email" class="form-control" id="email" placeholder="name@moh.gov.om">
+        <span class="lbl-ar">البريد الإلكتروني</span>
+      </div>
+
+    </div>
+    <div id="err2" class="alert alert-danger py-1 px-3 mx-3 mb-2 d-none" style="font-size:12px"></div>
+    <div class="action-bar d-flex justify-content-between align-items-center px-3 py-2">
+      <small class="text-muted"><span class="text-danger">*</span> All fields are mandatory</small>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-secondary btn-sm" onclick="goTab(2)">‹ Back</button><!-- note: goes back to tab1 -->
+        <button class="btn btn-outline-secondary btn-sm" onclick="clearAll()">Clear</button>
+        <button class="btn btn-primary btn-sm" onclick="nextTab(2)">Next &raquo;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ TAB 3 ════ -->
+  <div id="tp3" class="tab-pane-custom d-none">
+    <div class="px-3 pt-2 pb-1">
+      <span class="sec-label">Qualification / المؤهلات</span>
+    </div>
+    <div class="px-3 pb-3">
+
+      <!-- Degree -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Degree <span class="text-danger">*</span></span>
+        <select class="form-select" id="q-degree" onchange="sync('q-degree','q-degree-ar')">
+          <option value="">Select</option>
+          <option>Bachelor</option><option>Diploma</option><option>Master</option><option>PhD</option><option>Fellowship</option><option>Certificate</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span>
+        <select class="form-select" id="q-degree-ar" dir="rtl" onchange="sync('q-degree-ar','q-degree')">
+          <option value="">إختر</option>
+          <option>بكالوريوس</option><option>دبلوم</option><option>ماجستير</option><option>دكتوراه</option><option>زمالة</option><option>شهادة</option>
+        </select>
+        <span class="lbl-ar">درجة المؤهل</span>
+      </div>
+
+      <!-- Specialty -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Specialty <span class="text-danger">*</span></span>
+        <select class="form-select" id="q-specialty" onchange="sync('q-specialty','q-specialty-ar')">
+          <option value="">Select</option>
+          <option>General Practice</option><option>Paediatrics</option><option>Surgery</option><option>Radiology</option><option>Nursing</option><option>Pharmacy</option><option>Other</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span>
+        <select class="form-select" id="q-specialty-ar" dir="rtl" onchange="sync('q-specialty-ar','q-specialty')">
+          <option value="">إختر</option>
+          <option>طب عام</option><option>طب الأطفال</option><option>الجراحة</option><option>الأشعة</option><option>التمريض</option><option>الصيدلة</option><option>أخرى</option>
+        </select>
+        <span class="lbl-ar">التخصص الرئيسي</span>
+      </div>
+
+      <!-- Subspecialty -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Subspecialty <span class="text-danger">*</span></span>
+        <select class="form-select" id="q-subspecialty" onchange="sync('q-subspecialty','q-subspecialty-ar')">
+          <option value="">Select</option>
+          <option>Cardiology</option><option>Oncology</option><option>Neurology</option><option>Orthopaedics</option><option>Critical Care</option><option>N/A</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span>
+        <select class="form-select" id="q-subspecialty-ar" dir="rtl" onchange="sync('q-subspecialty-ar','q-subspecialty')">
+          <option value="">إختر</option>
+          <option>أمراض القلب</option><option>الأورام</option><option>الأعصاب</option><option>العظام</option><option>العناية المركزة</option><option>لا ينطبق</option>
+        </select>
+        <span class="lbl-ar">التخصص الفرعي</span>
+      </div>
+
+      <!-- Institute -->
+      <div class="field-row d-flex align-items-center py-1">
+        <span class="lbl-en">Institute <span class="text-danger">*</span></span>
+        <select class="form-select" id="q-institute" onchange="sync('q-institute','q-institute-ar')">
+          <option value="">Select</option>
+          <option>Sultan Qaboos University</option><option>Oman Medical College</option><option>Royal College of Surgeons</option><option>Cairo University</option><option>University of Jordan</option><option>Other</option>
+        </select>
+        <div style="width:24px;flex-shrink:0"></div>
+        <span class="lbl-en">&nbsp;</span>
+        <span class="lbl-ar">&nbsp;</span>
+        <select class="form-select" id="q-institute-ar" dir="rtl" onchange="sync('q-institute-ar','q-institute')">
+          <option value="">إختر</option>
+          <option>جامعة السلطان قابوس</option><option>كلية عمان الطبية</option><option>الكلية الملكية للجراحين</option><option>جامعة القاهرة</option><option>جامعة الأردن</option><option>أخرى</option>
+        </select>
+        <span class="lbl-ar">المؤسسة التعليمية</span>
+      </div>
+
+      <!-- Graduation Year + Add button -->
+      <div class="field-row d-flex align-items-center py-1" style="border-bottom:none">
+        <div class="d-flex align-items-center justify-content-center" style="flex:1; gap:10px; min-width:0;">
+          <span class="lbl-en">Graduation Year <span class="text-danger">*</span></span>
+          <input type="text" class="form-control" id="q-year" placeholder="yyyy" maxlength="4" style="max-width:140px; flex:none;">
+          <span class="lbl-ar">سنة التخرج</span>
+        </div>
+        <button class="btn btn-primary btn-sm ms-3" onclick="addQual()">+ Add Qualification</button>
+      </div>
+
+    </div>
+
+    <!-- Qualification list -->
+    <div class="mx-3 mb-3 border rounded" style="border-color:#dde3ea!important;overflow:hidden">
+      <div class="d-flex justify-content-between align-items-center px-3 py-2" style="background:#f8f9fb;border-bottom:1px solid #dde3ea">
+        <span class="sec-label mb-0">Added Qualifications / المؤهلات المضافة</span>
+        <small class="text-muted" id="qual-count">0 record(s)</small>
+      </div>
+      <table class="table table-sm table-hover qual-table mb-0">
+        <thead>
+          <tr>
+            <th style="width:36px">#</th>
+            <th>Degree / الدرجة</th>
+            <th>Specialty / التخصص</th>
+            <th>Subspecialty / الفرعي</th>
+            <th>Institute / المؤسسة</th>
+            <th style="width:90px">Grad. Year</th>
+            <th style="width:40px"></th>
+          </tr>
+        </thead>
+        <tbody id="qual-tbody">
+          <tr><td colspan="7" class="qual-empty text-center py-3">No qualifications added yet — fill the form above and click Add.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="err3" class="alert alert-danger py-1 px-3 mx-3 mb-2 d-none" style="font-size:12px"></div>
+
+    <div id="success-block" class="alert alert-success mx-3 mb-2 text-center d-none">
+      <h6 class="mb-1">&#10003; Employee registered successfully / تم تسجيل الموظف بنجاح</h6>
+      <small>Person, Employee and Qualification records created and linked.</small><br>
+      <span class="badge bg-success mt-2 px-3 py-2 fs-6" id="success-ref"></span><br>
+      <button class="btn btn-outline-success btn-sm mt-2" onclick="resetAll()">Register another</button>
+    </div>
+
+    <div class="action-bar d-flex justify-content-between align-items-center px-3 py-2">
+      <small class="text-muted"><span class="text-danger">*</span> All fields mandatory &nbsp;·&nbsp; Add at least one qualification before saving</small>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-secondary btn-sm" onclick="goTab(2)">‹ Back</button><!-- goTab(2) means show tab 2 -->
+        <button class="btn btn-outline-secondary btn-sm" onclick="clearAll()">Clear</button>
+        <button class="btn btn-success btn-sm" onclick="doSubmit()">&#10003; Save</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /card -->
+
+<script>
+/* ── Tab navigation ── */
+function goTab(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('tp'+i).classList.toggle('d-none', i!==n);
+  });
+  document.querySelectorAll('.nav-link[data-tab]').forEach(a => {
+    a.classList.toggle('active', parseInt(a.dataset.tab)===n);
+  });
+}
+
+/* ── Sync EN↔AR selects ── */
+function sync(s,t) {
+  const se=document.getElementById(s), te=document.getElementById(t);
+  if(se&&te) te.selectedIndex=se.selectedIndex;
+}
+
+/* ── Cascading area ── */
+const areasData={
+  Muscat:{en:['Seeb','Muttrah','Bausher','Muscat City','Qurayyat'],ar:['السيب','مطرح','بوشر','مسقط','قريات']},
+  Dhofar:{en:['Salalah','Thumrait','Mirbat','Rakhyut'],ar:['صلالة','ثمريت','مرباط','رخيوت']},
+  'Batinah North':{en:['Sohar','Shinas','Liwa','Saham'],ar:['صحار','شناص','لوى','صحم']},
+  'Batinah South':{en:['Rustaq','Nakhal','Awabi'],ar:['الرستاق','نخل','عوابي']},
+  Dakhliyah:{en:['Nizwa','Bahla','Adam','Manah'],ar:['نزوى','بهلاء','آدم','منح']}
+};
+function updateArea(){
+  const gov=document.getElementById('gov').value;
+  const aEl=document.getElementById('area'), aArEl=document.getElementById('area-ar');
+  aEl.innerHTML='<option value="">&lt;&lt; SELECT &gt;&gt;</option>';
+  aArEl.innerHTML='<option value="">إختر</option>';
+  if(gov&&areasData[gov]){
+    areasData[gov].en.forEach((v,i)=>{
+      const o=document.createElement('option');o.textContent=v;aEl.appendChild(o);
+      const oA=document.createElement('option');oA.textContent=areasData[gov].ar[i];aArEl.appendChild(oA);
+    });
+  }
+  aEl.onchange=()=>sync('area','area-ar');
+  aArEl.onchange=()=>sync('area-ar','area');
+}
+
+/* ── Validation ── */
+const t1=['civil-id','join-date','staff-num','dob','mawred','name-en','name-ar','category','designation','position','gender','nationality','department','section','grade','budget','status'];
+const t2=['marital','religion','gov','area','subarea','emergency-phone','phone','email'];
+
+function validate(ids, errId){
+  let bad=0;
+  ids.forEach(id=>{
+    const el=document.getElementById(id); if(!el)return;
+    const empty=!el.value.trim();
+    el.classList.toggle('is-invalid',empty);
+    if(empty) bad++;
+  });
+  const bar=document.getElementById(errId);
+  if(bad){
+    bar.textContent='⚠  Please complete all mandatory fields. ('+bad+' field'+(bad>1?'s':'')+' incomplete)';
+    bar.classList.remove('d-none'); return false;
+  }
+  bar.classList.add('d-none'); return true;
+}
+
+function nextTab(from){
+  if(from===1 && validate(t1,'err1')) goTab(2);
+  else if(from===2 && validate(t2,'err2')) goTab(3);
+}
+
+/* ── Qualification logic ── */
+let qualList=[], qualSeq=0;
+
+function addQual(){
+  const deg=document.getElementById('q-degree').value;
+  const spec=document.getElementById('q-specialty').value;
+  const sub=document.getElementById('q-subspecialty').value;
+  const inst=document.getElementById('q-institute').value;
+  const yr=document.getElementById('q-year').value.trim();
+  let ok=true;
+  ['q-degree','q-specialty','q-subspecialty','q-institute'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el.value){el.classList.add('is-invalid');ok=false;}else el.classList.remove('is-invalid');
+  });
+  const yEl=document.getElementById('q-year');
+  if(!yr||!/^\d{4}$/.test(yr)){yEl.classList.add('is-invalid');ok=false;}else yEl.classList.remove('is-invalid');
+  if(!ok){
+    const bar=document.getElementById('err3');
+    bar.textContent='⚠  Please fill all qualification fields before adding.';
+    bar.classList.remove('d-none'); return;
+  }
+  document.getElementById('err3').classList.add('d-none');
+  qualSeq++;
+  qualList.push({id:qualSeq,deg,spec,sub,inst,yr});
+  renderQualTable();
+  ['q-degree','q-specialty','q-subspecialty','q-institute','q-degree-ar','q-specialty-ar','q-subspecialty-ar','q-institute-ar'].forEach(id=>{
+    const el=document.getElementById(id); if(el){el.selectedIndex=0;el.classList.remove('is-invalid');}
+  });
+  document.getElementById('q-year').value='';
+}
+
+function removeQual(id){ qualList=qualList.filter(q=>q.id!==id); renderQualTable(); }
+
+function renderQualTable(){
+  const tbody=document.getElementById('qual-tbody');
+  document.getElementById('qual-count').textContent=qualList.length+' record(s)';
+  if(!qualList.length){
+    tbody.innerHTML='<tr><td colspan="7" class="qual-empty text-center py-3">No qualifications added yet — fill the form above and click Add.</td></tr>';
+    return;
+  }
+  tbody.innerHTML=qualList.map((q,i)=>`
+    <tr>
+      <td class="text-muted">${i+1}</td>
+      <td><strong>${q.deg}</strong></td>
+      <td>${q.spec}</td>
+      <td class="text-secondary">${q.sub}</td>
+      <td><span class="badge text-bg-warning">${q.inst}</span></td>
+      <td class="fw-semibold text-success">${q.yr}</td>
+      <td><button class="btn btn-sm btn-link text-danger p-0" onclick="removeQual(${q.id})">&#10005;</button></td>
+    </tr>
+  `).join('');
+}
+
+/* ── Submit ── */
+function doSubmit(){
+  if(qualList.length===0){
+    const bar=document.getElementById('err3');
+    bar.textContent='⚠  Please add at least one qualification before saving.';
+    bar.classList.remove('d-none'); return;
+  }
+  const ref='Staff # '+document.getElementById('staff-num').value+
+            '  ·  Civil ID: '+document.getElementById('civil-id').value+
+            '  ·  '+document.getElementById('name-en').value+
+            '  ·  '+qualList.length+' qualification(s)';
+  document.getElementById('success-ref').textContent=ref;
+  document.getElementById('success-block').classList.remove('d-none');
+}
+
+/* ── Load details ── */
+function doLoad(){
+  const c=document.getElementById('s-civil').value.trim();
+  const m=document.getElementById('s-mobile').value.trim();
+  const p=document.getElementById('s-person').value.trim();
+  if(!c&&!m&&!p){alert('Enter a Person #, Civil ID, or Mobile to search.');return;}
+  if(c==='10753522'||m==='99214668'||p==='P-001'){
+    document.getElementById('civil-id').value='10753522';
+    document.getElementById('name-en').value='MAYA AWADH RASHID AL KINDI';
+    document.getElementById('name-ar').value='مياء بنت عوض بن راشد الكندية';
+    document.getElementById('dob').value='1980-03-23';
+    document.getElementById('phone').value='99214668';
+    document.getElementById('emergency-phone').value='99214668';
+    document.getElementById('email').value='maya@moh.gov.om';
+    document.getElementById('gender').value='Female'; sync('gender','gender-ar');
+    document.getElementById('nationality').value='Omani'; sync('nationality','nationality-ar');
+    document.getElementById('religion').value='Islam'; sync('religion','religion-ar');
+    document.getElementById('marital').value='Married'; sync('marital','marital-ar');
+    document.getElementById('found-text').textContent='Record found: Maya Awadh Rashid Al Kindi · Civil ID 10753522 · Personal details pre-filled.';
+    document.getElementById('found-banner').classList.remove('d-none');
+    document.getElementById('found-banner').classList.add('d-flex');
+  } else {
+    document.getElementById('found-banner').classList.add('d-none');
+    alert('No record found. Continue entering details manually.');
+  }
+}
+
+/* ── Clear & Reset ── */
+function clearAll(){
+  document.querySelectorAll('input').forEach(i=>{i.value='';i.classList.remove('is-invalid');});
+  document.querySelectorAll('select').forEach(s=>{s.selectedIndex=0;s.classList.remove('is-invalid');});
+  [1,2,3].forEach(n=>{
+    const e=document.getElementById('err'+n);
+    if(e) e.classList.add('d-none');
+  });
+  document.getElementById('found-banner').classList.add('d-none');
+  document.getElementById('success-block').classList.add('d-none');
+  document.getElementById('area').innerHTML='<option value="">&lt;&lt; SELECT &gt;&gt;</option>';
+  document.getElementById('area-ar').innerHTML='<option value="">إختر</option>';
+}
+
+function resetAll(){ qualList=[];qualSeq=0;renderQualTable();clearAll();goTab(1); }
+
+/* Fix tab 2 back button — should go to tab 1 */
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.nav-link[data-tab]').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+});
+</script>
+</body>
+</html>
