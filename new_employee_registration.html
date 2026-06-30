@@ -5,13 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Employee Registration</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <style>
   /* ── Minimal overrides only — all layout is Bootstrap ── */
-  body { background: #f0f2f5; font-size: 13px; }
+  body { background: #f0f2f5; font-size: 13px; font-family: "Segoe UI", Roboto, Arial, sans-serif; }
+  .app-shell { max-width: 1400px; margin: 0 auto; }
+  .search-bar { background: linear-gradient(90deg, #3a9fd8 0%, #2f7fb4 100%); border: 1px solid #2d7aa8; border-radius: 10px; box-shadow: 0 6px 16px rgba(24, 87, 126, 0.16); }
+  .search-action-btn { height: 32px; color: #1a7ab5; font-size: 12px; }
+  .field-spacer { width: 24px; flex-shrink: 0; }
+  .status-box { background: #f8f9fb; border: 1px solid #dde3ea; border-radius: 8px; }
 
   /* Search bar */
-  .search-bar { background: #3a9fd8; }
+  .search-bar {
+    background: linear-gradient(90deg, #3a9fd8 0%, #2f7fb4 100%);
+    border: 1px solid #2d7aa8;
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(24, 87, 126, 0.16);
+  }
+  .search-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .search-bar-title {
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .search-bar-subtitle {
+    font-size: 11px;
+    opacity: 0.8;
+  }
   .search-bar .form-label { color: rgba(255,255,255,.88); font-size: 11px; margin-bottom: 3px; }
+  .search-bar .search-label-row { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:3px; }
+  .search-bar .row { gap: 14px; }
+  .search-bar .search-label-ar { color: rgba(255,255,255,.76); font-size: 10px; font-weight: 500; direction: rtl; text-align: right; white-space: nowrap; }
   .search-bar .form-control { background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.35); color: #fff; font-size: 12px; height: 32px; padding: 0 9px; }
   .search-bar .form-control::placeholder { color: rgba(255,255,255,.5); }
   .search-bar .form-control:focus { background: rgba(255,255,255,.28); border-color: #fff; box-shadow: none; }
@@ -19,11 +52,51 @@
   /* Found banner */
   #found-banner { background: #d9edf7; border-bottom: 1px solid #bce8f1; color: #31708f; font-size: 12px; }
 
-  /* Tabs — Bootstrap nav-tabs override to match existing blue style */
-  .nav-tabs { background: #f8f9fb; border-bottom: 1px solid #dde3ea; padding: 0 8px; }
-  .nav-tabs .nav-link { color: #777; font-size: 13px; border: none; border-bottom: 2px solid transparent; border-radius: 0; padding: 10px 20px; }
-  .nav-tabs .nav-link:hover { color: #3a9fd8; border-color: transparent; }
-  .nav-tabs .nav-link.active { color: #3a9fd8; border-bottom: 2px solid #3a9fd8; background: transparent; font-weight: 500; }
+  /* Main panel shell */
+  .panel-shell {
+    border: 1px solid #dfe6ee !important;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  }
+  .panel-header {
+    background: linear-gradient(90deg, #f7fbff 0%, #eef7fd 100%);
+    border-bottom: 1px solid #dde7f0;
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .panel-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #246a95;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-subtitle {
+    font-size: 12px;
+    color: #6f8092;
+    margin-top: 2px;
+  }
+  .panel-badge {
+    background: #eaf5fc;
+    color: #2d6d96;
+    border: 1px solid #cfe7f6;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  /* Tabs */
+  .nav-tabs { border-bottom: 0; }
+  .nav-link.active-tab {
+    color: #3a9fd8 !important;
+    border-bottom: 2px solid #3a9fd8 !important;
+  }
 
   /* Section label */
   .sec-label { font-size: 11px; font-weight: 600; color: #3a9fd8; text-transform: uppercase; letter-spacing: .05em; }
@@ -42,7 +115,7 @@
 
   /* EN label column */
   .lbl-en {
-    width: 130px;
+    width: 115px;
     font-size: 12px;
     color: #444;
     text-align: right;
@@ -52,7 +125,7 @@
 
   /* AR label column — sits to the RIGHT of its field */
   .lbl-ar {
-    width: 130px;
+    width: 115px;
     font-size: 12px;
     color: #888;
     text-align: left;
@@ -66,8 +139,8 @@
     background-color: #f4f6f8;
     border-color: #ccc;
     font-size: 12px;
-    height: 32px;
-    padding: 0 10px;
+    height: 31px;
+    padding: 0 8px;
   }
   .form-select { padding-right: 28px; }
   .form-control:focus, .form-select:focus {
@@ -83,12 +156,12 @@
   .form-select.is-invalid { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); }
 
   /* Field row spacing */
-  .field-row { margin-bottom:6px; gap:10px; }
-.field-row>.form-control,.field-row>.form-select{flex:1 1 0;min-width:180px;}
+  .field-row { margin-bottom:5px; gap:8px; }
+  .field-row>.form-control,.field-row>.form-select{flex:1 1 0;min-width:160px;}
 
   /* Civil ID row — centred */
   .civil-row { justify-content: center; }
-  .civil-row .civil-ctrl { width: 220px; flex: none; }
+  .civil-row .civil-ctrl { width: 210px; flex: none; }
 
   /* AR select — RTL text */
   .form-select[dir=rtl] { text-align: right; direction: rtl; }
@@ -102,32 +175,115 @@
   /* Action bar */
   .action-bar { background: #f8f9fb; border-top: 1px solid #dde3ea; }
 
+  /* Responsive adjustments for tablets and phones */
+  @media (max-width: 991px) {
+    .field-row {
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 4px;
+    }
+    .field-row > .lbl-en,
+    .field-row > .lbl-ar {
+      width: 100%;
+      text-align: left;
+      padding: 0;
+      margin-top: 2px;
+    }
+    .field-row > .form-control,
+    .field-row > .form-select {
+      width: 100%;
+      flex: 0 0 100%;
+      min-width: 0;
+    }
+    .field-row > div[style*="width:24px"] {
+      display: none;
+    }
+    .civil-row {
+      justify-content: stretch;
+    }
+    .civil-row .civil-ctrl {
+      width: 100%;
+      max-width: 260px;
+    }
+    .action-bar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .action-bar > .d-flex {
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    .action-bar .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .search-bar .row > .col,
+    .search-bar .row > .col-auto {
+      width: 100%;
+    }
+    .search-bar .btn {
+      width: 100%;
+    }
+    .nav-tabs .nav-link {
+      padding: 10px 12px;
+      font-size: 12px;
+    }
+    .card {
+      margin: 10px !important;
+    }
+    .action-bar .btn {
+      font-size: 12px;
+      padding: 0.45rem 0.7rem;
+    }
+  }
+
 </style>
 </head>
 <body>
 
 <!-- ── Search bar ── -->
-<div class="search-bar px-3 py-2">
-  <div class="row g-2 align-items-end">
-    <div class="col">
-      <label class="form-label">Person #</label>
-      <input type="text" class="form-control" id="s-person">
-    </div>
-    <div class="col">
-      <label class="form-label">Civil ID</label>
-      <input type="text" class="form-control" id="s-civil" placeholder="e.g. 10753522">
-    </div>
-    <div class="col">
-      <label class="form-label">Mobile</label>
-      <input type="text" class="form-control" id="s-mobile" placeholder="e.g. 99214668">
-    </div>
-    <div class="col-auto">
-      <button class="btn btn-light btn-sm fw-semibold" style="height:32px;color:#1a7ab5;font-size:12px" onclick="doLoad()">
-        &#128269; LOAD DETAILS
-      </button>
+<div class="app-shell">
+  <div class="mx-3 mt-3">
+    <div class="search-bar px-3 py-3">
+      <div class="row g-2 align-items-end">
+        <div class="col-12 col-lg-8">
+          <div class="row g-2 align-items-end">
+            <div class="col-12 col-md-6 col-lg">
+              <div class="search-label-row">
+                <label class="form-label mb-0">Person #</label>
+                <label class="form-label search-label-ar mb-0">الرقم الشخصي</label>
+              </div>
+              <input type="text" class="form-control" id="s-person">
+            </div>
+            <div class="col-12 col-md-6 col-lg">
+              <div class="search-label-row">
+                <label class="form-label mb-0">Civil ID</label>
+                <label class="form-label search-label-ar mb-0">الرقم المدني</label>
+              </div>
+              <input type="text" class="form-control" id="s-civil" placeholder="e.g. 10753522">
+            </div>
+            <div class="col-12 col-md-6 col-lg">
+              <div class="search-label-row">
+                <label class="form-label mb-0">Mobile</label>
+                <label class="form-label search-label-ar mb-0">الجوال</label>
+              </div>
+              <input type="text" class="form-control" id="s-mobile" placeholder="e.g. 99214668">
+            </div>
+            <div class="col-12 col-lg-auto">
+              <button type="button" class="btn btn-light btn-sm fw-semibold w-100 w-lg-auto search-action-btn" onclick="doLoad()">
+                <i class="fa-solid fa-magnifying-glass"></i> Load Details | تحميل التفاصيل
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
 <!-- Found banner -->
 <div id="found-banner" class="d-none px-3 py-2 d-flex align-items-center gap-2">
@@ -137,21 +293,29 @@
 </div>
 
 <!-- ── Card ── -->
-<div class="card mx-3 my-3 shadow-sm border" style="border-color:#dde3ea!important;border-radius:6px;overflow:hidden">
+<div class="card mx-3 my-3 shadow-sm border-0 panel-shell">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title"><i class="fa-solid fa-user-plus"></i> Employee Registration</div>
+      <div class="panel-subtitle">Register employee details, contacts, and qualifications</div>
+    </div>
+  </div>
 
   <!-- Tabs -->
-  <ul class="nav nav-tabs" id="mainTabs">
-    <li class="nav-item"><a class="nav-link active" data-tab="1" onclick="goTab(1,this)">Basic Information / المعلومات الأساسية</a></li>
-    <li class="nav-item"><a class="nav-link" data-tab="2" onclick="goTab(2,this)">Other Information / معلومات أخرى</a></li>
-    <li class="nav-item"><a class="nav-link" data-tab="3" onclick="goTab(3,this)">Qualification / المؤهلات</a></li>
-  </ul>
+  <div class="mx-3 mt-3">
+    <div class="border rounded-top-3 border-bottom-0 bg-light p-1 shadow-sm">
+      <ul class="nav gap-2" id="mainTabs">
+        <li class="nav-item"><a class="nav-link px-3 py-2 fw-semibold text-secondary bg-transparent shadow-none border-0 rounded-0" data-tab="1" onclick="goTab(1,this)">Basic Information | المعلومات الأساسية</a></li>
+        <li class="nav-item"><a class="nav-link px-3 py-2 fw-semibold text-secondary bg-transparent shadow-none border-0 rounded-0" data-tab="2" onclick="goTab(2,this)">Other Information | معلومات أخرى</a></li>
+        <li class="nav-item"><a class="nav-link px-3 py-2 fw-semibold text-secondary bg-transparent shadow-none border-0 rounded-0" data-tab="3" onclick="goTab(3,this)">Qualification | المؤهلات</a></li>
+      </ul>
+    </div>
+  </div>
 
   <!-- ════ TAB 1 ════ -->
-  <div id="tp1" class="tab-pane-custom">
-    <div class="px-3 pt-2 pb-1">
-      <span class="sec-label">Basic Information / المعلومات الأساسية</span>
-    </div>
-    <div class="px-3 pb-3">
+  <div id="tp1" class="tab-pane-custom border rounded-bottom-3 border-top-0 mx-3 mb-3 shadow-sm">
+    
+    <div class="px-3 pt-3 pb-3">
 
       <!-- Civil ID — centred -->
       <div class="field-row d-flex align-items-center civil-row py-1">
@@ -354,22 +518,20 @@
       </div>
 
     </div>
-    <div id="err1" class="alert alert-danger py-1 px-3 mx-3 mb-2 d-none" style="font-size:12px"></div>
+    <div id="err1" class="d-none mx-3 mb-2 px-3 py-2 border rounded-3 small fw-semibold text-danger status-box"></div>
     <div class="action-bar d-flex justify-content-between align-items-center px-3 py-2">
       <small class="text-muted"><span class="text-danger">*</span> All fields are mandatory</small>
       <div class="d-flex gap-2">
-        <button class="btn btn-outline-secondary btn-sm" onclick="clearAll()">Clear</button>
-        <button class="btn btn-primary btn-sm" onclick="nextTab(1)">Next &raquo;</button>
+        <button class="btn btn-outline-secondary btn-sm" onclick="clearAll()"><i class="fa-solid fa-eraser"></i> Clear | مسح</button>
+        <button class="btn btn-primary btn-sm" onclick="nextTab(1)"><i class="fa-solid fa-arrow-right"></i> Next | التالي</button>
       </div>
     </div>
   </div>
 
   <!-- ════ TAB 2 ════ -->
-  <div id="tp2" class="tab-pane-custom d-none">
-    <div class="px-3 pt-2 pb-1">
-      <span class="sec-label">Other Information / معلومات أخرى</span>
-    </div>
-    <div class="px-3 pb-3">
+  <div id="tp2" class="tab-pane-custom border rounded-bottom-3 border-top-0 mx-3 mb-3 shadow-sm d-none">
+    
+    <div class="px-3 pt-3 pb-3">
 
       <!-- Marital Status -->
       <div class="field-row d-flex align-items-center py-1">
@@ -469,23 +631,21 @@
       </div>
 
     </div>
-    <div id="err2" class="alert alert-danger py-1 px-3 mx-3 mb-2 d-none" style="font-size:12px"></div>
+    <div id="err2" class="d-none mx-3 mb-2 px-3 py-2 border rounded-3 small fw-semibold text-danger status-box"></div>
     <div class="action-bar d-flex justify-content-between align-items-center px-3 py-2">
       <small class="text-muted"><span class="text-danger">*</span> All fields are mandatory</small>
       <div class="d-flex gap-2">
-        <button class="btn btn-outline-secondary btn-sm" onclick="goTab(2)">‹ Back</button><!-- note: goes back to tab1 -->
-        <button class="btn btn-outline-secondary btn-sm" onclick="clearAll()">Clear</button>
-        <button class="btn btn-primary btn-sm" onclick="nextTab(2)">Next &raquo;</button>
+        <button class="btn btn-outline-secondary btn-sm" onclick="goTab(2)"><i class="fa-solid fa-arrow-left"></i> Back | رجوع</button><!-- note: goes back to tab1 -->
+        <button class="btn btn-outline-secondary btn-sm" onclick="clearAll()"><i class="fa-solid fa-eraser"></i> Clear | مسح</button>
+        <button class="btn btn-primary btn-sm" onclick="nextTab(2)"><i class="fa-solid fa-arrow-right"></i> Next | التالي</button>
       </div>
     </div>
   </div>
 
   <!-- ════ TAB 3 ════ -->
-  <div id="tp3" class="tab-pane-custom d-none">
-    <div class="px-3 pt-2 pb-1">
-      <span class="sec-label">Qualification / المؤهلات</span>
-    </div>
-    <div class="px-3 pb-3">
+  <div id="tp3" class="tab-pane-custom border rounded-bottom-3 border-top-0 mx-3 mb-3 shadow-sm d-none">
+   
+    <div class="px-3 pt-3 pb-3">
 
       <!-- Degree -->
       <div class="field-row d-flex align-items-center py-1">
@@ -562,7 +722,7 @@
           <input type="text" class="form-control" id="q-year" placeholder="yyyy" maxlength="4" style="max-width:140px; flex:none;">
           <span class="lbl-ar">سنة التخرج</span>
         </div>
-        <button class="btn btn-primary btn-sm ms-3" onclick="addQual()">+ Add Qualification</button>
+        <button class="btn btn-primary btn-sm ms-3" onclick="addQual()"><i class="fa-solid fa-plus"></i> Add Qualification | إضافة المؤهل</button>
       </div>
 
     </div>
@@ -591,37 +751,66 @@
       </table>
     </div>
 
-    <div id="err3" class="alert alert-danger py-1 px-3 mx-3 mb-2 d-none" style="font-size:12px"></div>
+    <div id="err3" class="d-none mx-3 mb-2 px-3 py-2 border rounded-3 small fw-semibold text-danger status-box"></div>
 
-    <div id="success-block" class="alert alert-success mx-3 mb-2 text-center d-none">
+    <div id="success-block" class="d-none mx-3 mb-2 p-3 border rounded-3 bg-success-subtle text-success-emphasis text-center">
       <h6 class="mb-1">&#10003; Employee registered successfully / تم تسجيل الموظف بنجاح</h6>
       <small>Person, Employee and Qualification records created and linked.</small><br>
       <span class="badge bg-success mt-2 px-3 py-2 fs-6" id="success-ref"></span><br>
-      <button class="btn btn-outline-success btn-sm mt-2" onclick="resetAll()">Register another</button>
+      <button type="button" class="btn btn-outline-success btn-sm mt-2" onclick="resetAll()"><i class="fa-solid fa-rotate-right"></i> Register another | تسجيل آخر</button>
     </div>
 
     <div class="action-bar d-flex justify-content-between align-items-center px-3 py-2">
       <small class="text-muted"><span class="text-danger">*</span> All fields mandatory <span class="mx-1">·</span> Add at least one qualification before saving</small>
       <div class="d-flex gap-2">
-        <button class="btn btn-outline-secondary btn-sm" onclick="goTab(2)">‹ Back</button><!-- goTab(2) means show tab 2 -->
-        <button class="btn btn-outline-secondary btn-sm" onclick="clearAll()">Clear</button>
-        <button class="btn btn-success btn-sm" onclick="doSubmit()">&#10003; Save</button>
+        <button class="btn btn-outline-secondary btn-sm" onclick="goTab(2)"><i class="fa-solid fa-arrow-left"></i> Back | رجوع</button><!-- goTab(2) means show tab 2 -->
+        <button class="btn btn-outline-secondary btn-sm" onclick="clearAll()"><i class="fa-solid fa-eraser"></i> Clear | مسح</button>
+        <button class="btn btn-success btn-sm" onclick="doSubmit()"><i class="fa-solid fa-floppy-disk"></i> Save | حفظ</button>
       </div>
     </div>
   </div>
 
 </div><!-- /card -->
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
+toastr.options = {
+  closeButton: true,
+  progressBar: true,
+  newestOnTop: true,
+  positionClass: 'toast-top-right',
+  preventDuplicates: true,
+  timeOut: 3200
+};
+
+function showToast(type, message) {
+  if (typeof toastr[type] === 'function') {
+    toastr[type](message);
+  }
+}
+
 /* ── Tab navigation ── */
 function goTab(n) {
   [1,2,3].forEach(i => {
     document.getElementById('tp'+i).classList.toggle('d-none', i!==n);
   });
   document.querySelectorAll('.nav-link[data-tab]').forEach(a => {
-    a.classList.toggle('active', parseInt(a.dataset.tab)===n);
+    const active = parseInt(a.dataset.tab)===n;
+    a.classList.toggle('active', active);
+    a.classList.toggle('active-tab', active);
+    a.classList.toggle('border-bottom', active);
+    a.classList.toggle('rounded-0', active);
+    a.classList.toggle('bg-transparent', true);
+    a.classList.toggle('text-secondary', !active);
+    a.classList.toggle('border-0', !active);
+    a.classList.toggle('shadow-none', true);
+    a.classList.toggle('fw-semibold', active);
+    a.classList.toggle('fw-normal', !active);
   });
 }
+
+goTab(1);
 
 /* ── Sync EN↔AR selects ── */
 function sync(s,t) {
@@ -666,8 +855,11 @@ function validate(ids, errId){
   });
   const bar=document.getElementById(errId);
   if(bad){
-    bar.textContent='⚠  Please complete all mandatory fields. ('+bad+' field'+(bad>1?'s':'')+' incomplete)';
-    bar.classList.remove('d-none'); return false;
+    const message='⚠  Please complete all mandatory fields. ('+bad+' field'+(bad>1?'s':'')+' incomplete)';
+    bar.textContent=message;
+    bar.classList.remove('d-none');
+    showToast('warning', message);
+    return false;
   }
   bar.classList.add('d-none'); return true;
 }
@@ -695,11 +887,15 @@ function addQual(){
   if(!yr||!/^\d{4}$/.test(yr)){yEl.classList.add('is-invalid');ok=false;}else yEl.classList.remove('is-invalid');
   if(!ok){
     const bar=document.getElementById('err3');
-    bar.textContent='⚠  Please fill all qualification fields before adding.';
-    bar.classList.remove('d-none'); return;
+    const message='⚠  Please fill all qualification fields before adding.';
+    bar.textContent=message;
+    bar.classList.remove('d-none');
+    showToast('warning', message);
+    return;
   }
   document.getElementById('err3').classList.add('d-none');
   qualSeq++;
+  showToast('success', 'Qualification added successfully.');
   qualList.push({id:qualSeq,deg,spec,sub,inst,yr});
   renderQualTable();
   ['q-degree','q-specialty','q-subspecialty','q-institute','q-degree-ar','q-specialty-ar','q-subspecialty-ar','q-institute-ar'].forEach(id=>{
@@ -734,8 +930,11 @@ function renderQualTable(){
 function doSubmit(){
   if(qualList.length===0){
     const bar=document.getElementById('err3');
-    bar.textContent='⚠  Please add at least one qualification before saving.';
-    bar.classList.remove('d-none'); return;
+    const message='⚠  Please add at least one qualification before saving.';
+    bar.textContent=message;
+    bar.classList.remove('d-none');
+    showToast('warning', message);
+    return;
   }
   const ref='Staff # '+document.getElementById('staff-num').value+
             '  ·  Civil ID: '+document.getElementById('civil-id').value+
@@ -743,6 +942,7 @@ function doSubmit(){
             '  ·  '+qualList.length+' qualification(s)';
   document.getElementById('success-ref').textContent=ref;
   document.getElementById('success-block').classList.remove('d-none');
+  showToast('success', 'Employee registration completed successfully.');
 }
 
 /* ── Load details ── */
@@ -750,7 +950,7 @@ function doLoad(){
   const c=document.getElementById('s-civil').value.trim();
   const m=document.getElementById('s-mobile').value.trim();
   const p=document.getElementById('s-person').value.trim();
-  if(!c&&!m&&!p){alert('Enter a Person #, Civil ID, or Mobile to search.');return;}
+  if(!c&&!m&&!p){showToast('warning','Enter a Person #, Civil ID, or Mobile to search.');return;}
   if(c==='10753522'||m==='99214668'||p==='P-001'){
     document.getElementById('civil-id').value='10753522';
     document.getElementById('name-en').value='MAYA AWADH RASHID AL KINDI';
@@ -766,9 +966,10 @@ function doLoad(){
     document.getElementById('found-text').textContent='Record found: Maya Awadh Rashid Al Kindi · Civil ID 10753522 · Personal details pre-filled.';
     document.getElementById('found-banner').classList.remove('d-none');
     document.getElementById('found-banner').classList.add('d-flex');
+    showToast('success','Employee record loaded successfully.');
   } else {
     document.getElementById('found-banner').classList.add('d-none');
-    alert('No record found. Continue entering details manually.');
+    showToast('info','No record found. Continue entering details manually.');
   }
 }
 
