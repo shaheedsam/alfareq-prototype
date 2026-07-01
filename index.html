@@ -27,26 +27,43 @@
     header {
       background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
       color: #ffffff;
-      padding: 40px 24px;
+      padding: 20px 24px;
       text-align: center;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
     .header-content {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
     }
 
-    header h1 {
-      font-size: 28px;
-      font-weight: 700;
+    .header-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
       margin-bottom: 12px;
+      text-align: left;
+    }
+
+    .header-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 280px;
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
       letter-spacing: -0.5px;
     }
 
     header p {
       color: #93c5fd;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 400;
     }
 
@@ -184,7 +201,12 @@
       color: #ffffff;
       text-decoration: none;
       font-weight: 500;
+      font-family: inherit;
+      font-size: inherit;
+      border: none;
       border-radius: 6px;
+      cursor: pointer;
+      appearance: none;
       transition: background 0.2s;
     }
 
@@ -192,72 +214,242 @@
       background: #1d4ed8;
     }
 
-    /* IIS Hosting Instructions Box */
-    .iis-guide {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 28px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 2000;
     }
 
-    .guide-step {
-      margin-bottom: 20px;
+    .modal-backdrop.open {
       display: flex;
-      gap: 16px;
     }
 
-    .guide-step:last-child {
-      margin-bottom: 0;
+    .modal-panel {
+      width: min(1100px, 100%);
+      max-height: 90vh;
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(2, 6, 23, 0.28);
+      display: flex;
+      flex-direction: column;
     }
 
-    .step-num {
-      width: 28px;
-      height: 28px;
-      background: #1e3a8a;
-      color: #ffffff;
-      border-radius: 50%;
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .modal-close {
+      border: none;
+      background: transparent;
+      color: #475569;
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 16px;
+      overflow: auto;
+      background: #f8fafc;
+    }
+
+    .modal-body img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      background: rgba(255,255,255,0.16);
+      color: #e0f2fe;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .app-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 999px;
+    }
+
+    .app-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #dbeafe 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 600;
-      font-size: 13px;
+      color: #1d4ed8;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
       flex-shrink: 0;
-      margin-top: 2px;
     }
 
-    .step-text h4 {
-      font-size: 15px;
-      font-weight: 600;
+    .app-brand-name {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #ffffff;
+    }
+
+    .overview-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 10px 20px -12px rgba(15, 23, 42, 0.2);
+    }
+
+    .overview-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .overview-top h2 {
+      font-size: 20px;
       color: #0f172a;
-      margin-bottom: 6px;
+      line-height: 1.25;
+      margin-top: 4px;
     }
 
-    .step-text p {
-      color: #64748b;
-      line-height: 1.5;
-      margin-bottom: 6px;
-    }
-
-    .code-block {
-      background: #f1f5f9;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-family: monospace;
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
       font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .meta-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+
+    .meta-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 5px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .panel {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    .panel h3 {
+      font-size: 16px;
       color: #0f172a;
-      border: 1px solid #cbd5e1;
-      display: inline-block;
-      margin: 4px 0;
+      margin-bottom: 10px;
+    }
+
+    .panel p,
+    .panel li {
+      color: #475569;
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .panel ul {
+      margin-left: 18px;
+    }
+
+    .note-panel {
+      background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 20px 24px;
+      color: #1e3a8a;
+      line-height: 1.6;
+    }
+
+    .note-panel strong {
+      color: #1e40af;
     }
 
     footer {
       background: #0f172a;
-      color: #64748b;
-      text-align: center;
-      padding: 24px;
+      color: #94a3b8;
+      padding: 20px 24px;
       font-size: 13px;
       border-top: 1px solid #1e293b;
+    }
+
+    .footer-content {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-left {
+      text-align: left;
+      margin-right: auto;
+    }
+
+    .footer-right {
+      text-align: right;
+      margin-left: auto;
     }
   </style>
 </head>
@@ -266,12 +458,77 @@
 
   <header>
     <div class="header-content">
-      <h1>Employee Registration Prototypes</h1>
-      <p>Interactive client presentation dashboard and portal</p>
+      <div class="header-title-row">
+        <div class="app-brand">
+          <div class="app-icon" aria-hidden="true">
+            <img src="HRMS_Icon.png" alt="AL FAREQ HRMS icon" style="width: 100%; height: 100%; object-fit: contain; display: block;">
+          </div>
+          <div class="app-brand-name">AL FAREQ HRMS</div>
+        </div>
+        <div class="header-copy">
+          <h2>Employee Registration Change Request</h2>
+          <p>Prototype for client review and approval of the proposed employee registration experience</p>
+        </div>
+      </div>
+      <div class="eyebrow">Client Prototype Review</div>
     </div>
   </header>
 
   <main>
+    <div class="overview-card">
+      <div class="overview-top">
+        <div>
+          <div class="pill">Prototype Summary</div>
+          <h2>Enhancement to the current Employee Registration form for the Al Fareq HRMS application</h2>
+        </div>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Developer</span>
+          <div>Shaheed</div>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Department</span>
+          <div>Information Technology, DGHS Muscat</div>
+        </div>
+      </div>
+
+      <div class="content-grid" style="margin-top: 20px;">
+        <div class="panel">
+          <h3>Application</h3>
+          <p><strong>Al Fareq [HRMS]</strong></p>
+          <p>This prototype supports a change request for the current Employee Registration workflow.</p>
+        </div>
+        <div class="panel">
+          <h3>Purpose</h3>
+          <p>Enhancement to the employee registration experience as per the approved change request.</p>
+        </div>
+        <div class="panel">
+          <h3>Expected Benefits</h3>
+          <ul>
+            <li>Faster and easier data entry</li>
+            <li>Reduced user confusion</li>
+            <li>Better approval readiness and maintainability</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top: 20px;">
+        <h3>Proposed Improvements</h3>
+        <ul>
+          <li>Cleaner layout and better organization</li>
+          <li>Improved field grouping and labels</li>
+          <li>More structured form flow</li>
+          <li>Improved consistency with modern HR workflows</li>
+        </ul>
+      </div>
+
+      <div class="note-panel" style="margin-top: 20px;">
+        <strong>Client review focus:</strong> this page presents the proposed design direction for approval before implementation into the existing HRMS workflow.
+      </div>
+    </div>
+
     <div>
       <h2 class="section-title">
         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
@@ -280,7 +537,7 @@
             d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
           </path>
         </svg>
-        Available Prototypes
+        Prototype Review Screens
       </h2>
       <div class="cards-grid">
 
@@ -293,24 +550,23 @@
                 d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
             </svg>
           </div>
-          <h3 class="card-title">Bilingual Grid Form</h3>
+          <h3 class="card-title">Current Registration Form</h3>
           <p class="card-desc">
-            A single-page form designed for dual-language data entry. Features parallel English and Arabic fields,
-            synchronized values, instant validation, and person lookups. Field widths are completely uniform and
-            aligned.
+            Reference view of the existing employee registration form currently used in the HRMS. This helps the client
+            compare the present experience with the proposed enhancement.
           </p>
           <div class="card-tags">
-            <span class="tag tag-blue">Bilingual Grid</span>
-            <span class="tag tag-green">Responsive CSS</span>
-            <span class="tag">Form Validation</span>
+            <span class="tag tag-blue">Current State</span>
+            <span class="tag tag-green">Reference View</span>
+            <span class="tag">Existing Workflow</span>
           </div>
-          <a href="employee_registration_form.html" class="card-btn">
-            Open Prototype v1.0
+          <button type="button" class="card-btn" onclick="openCurrentFormModal()">
+            Open Current Form
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
-          </a>
+          </button>
         </div>
 
         <!-- Card 2 -->
@@ -323,18 +579,18 @@
               </path>
             </svg>
           </div>
-          <h3 class="card-title">Step-by-Step Wizard</h3>
+          <h3 class="card-title">Proposed Registration Experience</h3>
           <p class="card-desc">
-            A modern, multi-step wizard prototype guiding users sequentially through identity lookup, personal
-            information entry, employment details, and a final confirmation review page.
+            A redesigned prototype showing a cleaner, better-structured registration experience with improved grouping,
+            clearer labels, and a more guided flow aligned to the change request.
           </p>
           <div class="card-tags">
-            <span class="tag tag-blue">Wizard UI</span>
-            <span class="tag tag-green">Client-side Routing</span>
-            <span class="tag">Multi-step</span>
+            <span class="tag tag-blue">Proposed UI</span>
+            <span class="tag tag-green">Change Request</span>
+            <span class="tag">Review Screen</span>
           </div>
           <a href="new_employee_registration.html" class="card-btn">
-            Employee Register - Prototype
+            Open Proposed Prototype
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -345,71 +601,53 @@
       </div>
     </div>
 
-    <div>
-      <h2 class="section-title">
-        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 9.172V5L8 4z">
-          </path>
-        </svg>
-        IIS Hosting Setup Guide
-      </h2>
-      <div class="iis-guide">
-        <div class="guide-step">
-          <div class="step-num">1</div>
-          <div class="step-text">
-            <h4>Locate the Project Folder</h4>
-            <p>Ensure all your prototype files (like <code>index.html</code>,
-              <code>employee_registration_form.html</code>, and
-              <code>unified_employee_registration_prototype.html</code>) are kept in a single directory on your machine.
-              Currently they are located at:</p>
-            <div class="code-block">D:\Activities\Experiments</div>
-          </div>
-        </div>
-
-        <div class="guide-step">
-          <div class="step-num">2</div>
-          <div class="step-text">
-            <h4>Open IIS Manager</h4>
-            <p>Press <kbd>Win + R</kbd>, type <code
-                style="background:#f1f5f9;padding:2px 4px;border-radius:4px">inetmgr</code>, and press Enter to launch
-              the Internet Information Services (IIS) Manager.</p>
-          </div>
-        </div>
-
-        <div class="guide-step">
-          <div class="step-num">3</div>
-          <div class="step-text">
-            <h4>Create a New Website or Application</h4>
-            <p>In the left Connections panel, expand your server node, right-click on <strong>Sites</strong>, and select
-              <strong>Add Website...</strong>.</p>
-            <p>Fill in the settings:</p>
-            <ul style="margin-left: 20px; color: #64748b; line-height: 1.6; list-style-type: square;">
-              <li><strong>Site name:</strong> <code>EmployeePrototypes</code></li>
-              <li><strong>Physical path:</strong> <code>D:\Activities\Experiments</code></li>
-              <li><strong>Binding Port:</strong> Choose an open port (e.g. <code>8082</code> or <code>8888</code>) to
-                avoid conflicts.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="guide-step">
-          <div class="step-num">4</div>
-          <div class="step-text">
-            <h4>Verify and Present</h4>
-            <p>Click <strong>OK</strong> to start the site. Open your web browser and navigate to:</p>
-            <div class="code-block">http://localhost:8082</div>
-            <p>Your client can now see the presentation hub directly on the local network using your machine's local IP
-              address (e.g. <code>http://192.168.x.x:8082</code>).</p>
-          </div>
-        </div>
-      </div>
-    </div>
   </main>
 
+  <div class="modal-backdrop" id="currentFormModal" onclick="closeCurrentFormModal(event)">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="currentFormModalTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="currentFormModalTitle">Current Employee Registration Form</div>
+        <button type="button" class="modal-close" aria-label="Close" onclick="closeCurrentFormModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <img src="Images/CurrentRegister.png" alt="Current Employee Registration Form Screenshot">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openCurrentFormModal() {
+      const modal = document.getElementById('currentFormModal');
+      if (modal) {
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeCurrentFormModal(event) {
+      const modal = document.getElementById('currentFormModal');
+      if (!modal) return;
+      if (event && event.target !== modal) return;
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        closeCurrentFormModal();
+      }
+    });
+  </script>
+
   <footer>
-    <p>Employee Registration Prototypes Portal · IT - DGHS Muscat</p>
+    <div class="footer-content">
+      <div class="footer-left">
+        <p>© 2026 Information Technology, DGHS Muscat · Al Fareq HRMS Prototype Review Portal</p>
+      </div>
+      <div class="footer-right">
+        <p>دائرة تقنية المعلومات - الصحية مسقط</p>
+      </div>
+    </div>
   </footer>
 
 </body>
