@@ -443,13 +443,21 @@
         <span class="lbl-en">Department <span class="text-danger">*</span></span>
         <select class="form-select" id="department" onchange="sync('department','department-ar')">
           <option value="">&lt;&lt; SELECT &gt;&gt;</option>
-          <option>Emergency</option><option>Paediatrics</option><option>Surgery</option><option>Radiology</option><option>Internal Medicine</option>
+          <option>Director General's Office</option>
+          <option>Disease Control And Prevention Department</option>
+          <option>Health Services And Programs Department</option>
+          <option>Women And Child Health Department</option>
+          <option>Health Planning And Regulation Department</option>
         </select>
         <div style="width:24px;flex-shrink:0"></div>
         <span class="lbl-en"></span>
         <span class="lbl-ar"></span><select class="form-select" id="department-ar" dir="rtl" onchange="sync('department-ar','department')">
           <option value="">إختر</option>
-          <option>الطوارئ</option><option>طب الأطفال</option><option>الجراحة</option><option>الأشعة</option><option>الباطنية</option>
+          <option>مكتب المدير العام</option>
+          <option>دائرة مراقبة الأمراض و الوقاية منها</option>
+          <option>دائرة الخدمات الصحية و البرامج</option>
+          <option>دائرة صحة المرأة و الطفل</option>
+          <option>دائرة التخطيط و التنظيم الصحي</option>
         </select>
         <span class="lbl-ar">الدائرة</span>
       </div>
@@ -481,7 +489,7 @@
         <span class="lbl-en"></span>
         <span class="lbl-ar"></span><select class="form-select" id="grade-ar" dir="rtl" onchange="sync('grade-ar','grade')">
           <option value="">إختر</option>
-          <option>درجة 1</option><option>درجة 2</option><option>درجة 3</option><option>درجة 4</option><option>درجة 5</option>
+          <option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option><option>الخامسة</option>
         </select>
         <span class="lbl-ar">الدرجة</span>
       </div>
@@ -491,13 +499,21 @@
         <span class="lbl-en">Budget <span class="text-danger">*</span></span>
         <select class="form-select" id="budget" onchange="sync('budget','budget-ar')">
           <option value="">&lt;&lt; SELECT &gt;&gt;</option>
-          <option>Ministry</option><option>Self-funded</option><option>Project</option>
+          <option>MOH</option>
+          <option>DGHS - Muscat</option>
+          <option>Royal Hospital</option>
+          <option>Sultan Qaboos Hospital</option>
+          <option>Oman College Of Health Services</option>
         </select>
         <div style="width:24px;flex-shrink:0"></div>
         <span class="lbl-en"></span>
         <span class="lbl-ar"></span><select class="form-select" id="budget-ar" dir="rtl" onchange="sync('budget-ar','budget')">
           <option value="">إختر</option>
-          <option>وزارة</option><option>ذاتي</option><option>مشروع</option>
+          <option>ديوان عام الوزارة</option>
+          <option>مديرية مسقط</option>
+          <option>المستشفى السلطاني</option>
+          <option>مستشفى السلطان قابوس</option>
+          <option>كلية عمان للعلوم الصحية</option>
         </select>
         <span class="lbl-ar">الموازنة</span>
       </div>
@@ -507,13 +523,29 @@
         <span class="lbl-en">Status <span class="text-danger">*</span></span>
         <select class="form-select" id="status" onchange="sync('status','status-ar')">
           <option value="">&lt;&lt; SELECT &gt;&gt;</option>
-          <option>Active</option><option>Inactive</option><option>On Leave</option><option>Terminated</option>
+          <option>Active</option>
+          <option>Internal Secondment</option>
+          <option>External Secondment</option>
+          <option>Study Leave In Oman</option>
+          <option>Study Leave Outside Oman</option>
+          <option>Unpaid Leave</option>
+          <option>External Transfer</option>
+          <option>End Of Service</option>
+          <option>Suspended</option>
         </select>
         <div style="width:24px;flex-shrink:0"></div>
         <span class="lbl-en"></span>
         <span class="lbl-ar"></span><select class="form-select" id="status-ar" dir="rtl" onchange="sync('status-ar','status')">
           <option value="">إختر</option>
-          <option>نشط</option><option>غير نشط</option><option>في إجازة</option><option>منتهي</option>
+          <option>على رأس العمل</option>
+          <option>ندب داخل المؤسسة</option>
+          <option>ندب خارج المؤسسة</option>
+          <option>إجازة دراسية داخل السلطنة</option>
+          <option>إجازة دراسية خارج السلطنة</option>
+          <option>إجازة بدون راتب</option>
+          <option>نقل خارج المؤسسة</option>
+          <option>إنتهاء الخدمة</option>
+          <option>موقوف عن العمل</option>
         </select>
         <span class="lbl-ar">الحالة</span>
       </div>
