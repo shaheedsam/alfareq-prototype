@@ -1,574 +1,348 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Step-by-Step Employee Registration Wizard</title>
-  <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-  :root {
-    --font-sans: 'Inter', "Segoe UI", system-ui, -apple-system, sans-serif;
-    --color-border-secondary: #cbd5e1;
-    --color-border-tertiary: #e2e8f0;
-    --color-text-secondary: #64748b;
-    --color-text-primary: #1e293b;
-    --color-background-primary: #ffffff;
-    --color-background-secondary: #f8fafc;
-    --border-radius-lg: 12px;
-    --border-radius-md: 6px;
-  }
-
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    font-family: var(--font-sans);
-    font-size: 13px;
-    color: var(--color-text-primary);
-    background: #f1f5f9;
-    padding: 24px 16px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  /* Card container for the form */
-  .form-container {
-    width: 100%;
-    max-width: 960px;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 10px 15px -3px rgba(0,0,0,0.1);
-    border: 1px solid #e2e8f0;
-    overflow: hidden;
-  }
-
-  /* Top Navigation Bar */
-  .top-nav-bar {
-    background: #0f172a;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #1e293b;
-    color: #94a3b8;
-    font-size: 12px;
-  }
-  .back-link {
-    color: #38bdf8;
-    text-decoration: none;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: color 0.15s ease;
-  }
-  .back-link:hover {
-    color: #7dd3fc;
-  }
-  .project-title {
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-size: 11px;
-  }
-
-  .form-wrap {
-    padding: 24px;
-  }
-.step-bar{display:flex;align-items:center;gap:0;margin-bottom:2rem}
-.step{display:flex;align-items:center;gap:8px;flex:1}
-.step-circle{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--color-border-secondary);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--color-text-secondary);background:var(--color-background-primary);flex-shrink:0;transition:all .2s}
-.step-label{font-size:12px;color:var(--color-text-secondary);white-space:nowrap}
-.step-line{flex:1;height:1px;background:var(--color-border-tertiary);margin:0 8px}
-.step.active .step-circle{background:#185FA5;border-color:#185FA5;color:#fff}
-.step.active .step-label{color:var(--color-text-primary);font-weight:500}
-.step.done .step-circle{background:#1D9E75;border-color:#1D9E75;color:#fff}
-.step.done .step-label{color:#0F6E56}
-.section-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem}
-.section-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)}
-.section-badge{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
-.badge-person{background:#E6F1FB;color:#0C447C}
-.badge-employee{background:#E1F5EE;color:#085041}
-.section-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
-.section-sub{font-size:12px;color:var(--color-text-secondary);margin-left:auto}
-.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.field-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.field-full{grid-column:1/-1}
-.field-group{display:flex;flex-direction:column;gap:4px}
-label{font-size:12px;color:var(--color-text-secondary)}
-label .req{color:#E24B4A;margin-left:2px}
-input,select{width:100%;height:34px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:0 10px;font-size:13px;color:var(--color-text-primary);background:var(--color-background-primary);outline:none}
-input:focus,select:focus{border-color:#378ADD;box-shadow:0 0 0 2px rgba(55,138,221,.15)}
-input.error,select.error{border-color:#E24B4A}
-input.success{border-color:#1D9E75}
-.input-with-btn{display:flex;gap:6px}
-.input-with-btn input{flex:1}
-.lookup-btn{height:34px;padding:0 12px;border:0.5px solid #378ADD;border-radius:var(--border-radius-md);background:transparent;color:#185FA5;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .15s}
-.lookup-btn:hover{background:#E6F1FB}
-.toggle-group{display:flex;gap:6px;flex-wrap:wrap}
-.toggle-btn{flex:1;min-width:60px;height:34px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:transparent;font-size:12px;color:var(--color-text-secondary);cursor:pointer;transition:all .15s}
-.toggle-btn.active{background:#185FA5;border-color:#185FA5;color:#fff}
-.lookup-result{background:#E6F1FB;border:0.5px solid #B5D4F4;border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:12px;display:none}
-.lookup-result.show{display:block}
-.lookup-result-label{font-size:11px;color:#185FA5;font-weight:500;margin-bottom:4px}
-.lookup-result-name{font-size:14px;font-weight:500;color:#0C447C}
-.lookup-result-meta{font-size:12px;color:#185FA5;margin-top:2px}
-.hint{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
-.divider{height:0.5px;background:var(--color-border-tertiary);margin:12px 0}
-.action-row{display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem}
-.btn-primary{height:38px;padding:0 24px;background:#185FA5;border:none;border-radius:var(--border-radius-md);color:#fff;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s}
-.btn-primary:hover{background:#0C447C}
-.btn-primary:disabled{background:var(--color-border-secondary);cursor:not-allowed}
-.btn-secondary{height:38px;padding:0 20px;background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);color:var(--color-text-secondary);font-size:14px;cursor:pointer}
-.btn-secondary:hover{background:var(--color-background-secondary)}
-.status-pill{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500}
-.pill-new{background:#E1F5EE;color:#085041}
-.pill-existing{background:#E6F1FB;color:#0C447C}
-.success-card{background:#E1F5EE;border:0.5px solid #9FE1CB;border-radius:var(--border-radius-lg);padding:1.5rem;text-align:center;display:none}
-.success-card.show{display:block}
-.success-icon{font-size:32px;color:#1D9E75;margin-bottom:.75rem}
-.success-title{font-size:16px;font-weight:500;color:#085041;margin-bottom:.5rem}
-.success-meta{font-size:13px;color:#0F6E56}
-.ref-badge{display:inline-block;background:#fff;border:0.5px solid #9FE1CB;border-radius:var(--border-radius-md);padding:4px 14px;font-size:13px;font-weight:500;color:#085041;margin-top:.75rem}
-.form-main{display:block}
-</style>
+  <link rel="stylesheet" href="assets/css/unified_employee_registration.css">
 </head>
+
 <body>
 
-<div class="form-container">
-  <!-- Top Navigation Bar -->
-  <div class="top-nav-bar">
-    <a href="index.html" class="back-link">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-      Back to Presentation Hub
-    </a>
-    <span class="project-title">Employee Portal Prototypes</span>
-  </div>
-
-  <div class="form-wrap">
-    <h2 class="sr-only">Unified employee registration form prototype</h2>
-
-  <div class="step-bar">
-    <div class="step active" id="s1">
-      <div class="step-circle">1</div>
-      <span class="step-label">Identity lookup</span>
+  <div class="form-container">
+    <!-- Top Navigation Bar -->
+    <div class="top-nav-bar">
+      <a href="index.html" class="back-link">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Back to Presentation Hub
+      </a>
+      <span class="project-title">Employee Portal Prototypes</span>
     </div>
-    <div class="step-line"></div>
-    <div class="step" id="s2">
-      <div class="step-circle">2</div>
-      <span class="step-label">Personal details</span>
-    </div>
-    <div class="step-line"></div>
-    <div class="step" id="s3">
-      <div class="step-circle">3</div>
-      <span class="step-label">Employment details</span>
-    </div>
-    <div class="step-line"></div>
-    <div class="step" id="s4">
-      <div class="step-circle">4</div>
-      <span class="step-label">Review &amp; submit</span>
-    </div>
-  </div>
 
-  <div class="form-main" id="form-main">
+    <div class="form-wrap">
+      <h2 class="sr-only">Unified employee registration form prototype</h2>
 
-    <div id="panel-1">
-      <div class="section-card">
-        <div class="section-header">
-          <div class="section-badge badge-person"><i class="ti ti-search" aria-hidden="true"></i></div>
-          <span class="section-title">Search for existing person record</span>
-          <span class="section-sub">Optional</span>
+      <div class="step-bar">
+        <div class="step active" id="s1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Identity lookup</span>
         </div>
-        <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:1rem">If the person is already in the system, we can pre-fill their details. Otherwise, leave blank and continue.</p>
-        <div class="field-grid">
-          <div class="field-group">
-            <label>Civil number</label>
-            <div class="input-with-btn">
-              <input type="text" id="search-civil" placeholder="e.g. 10753522">
-              <button class="lookup-btn" onclick="doLookup('civil')"><i class="ti ti-search" aria-hidden="true"></i> Lookup</button>
+        <div class="step-line"></div>
+        <div class="step" id="s2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Personal details</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="s3">
+          <div class="step-circle">3</div>
+          <span class="step-label">Employment details</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="s4">
+          <div class="step-circle">4</div>
+          <span class="step-label">Review &amp; submit</span>
+        </div>
+      </div>
+
+      <div class="form-main" id="form-main">
+
+        <div id="panel-1">
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-badge badge-person"><i class="ti ti-search" aria-hidden="true"></i></div>
+              <span class="section-title">Search for existing person record</span>
+              <span class="section-sub">Optional</span>
+            </div>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:1rem">If the person is already in
+              the system, we can pre-fill their details. Otherwise, leave blank and continue.</p>
+            <div class="field-grid">
+              <div class="field-group">
+                <label>Civil number</label>
+                <div class="input-with-btn">
+                  <input type="text" id="search-civil" placeholder="e.g. 10753522">
+                  <button class="lookup-btn" onclick="doLookup('civil')"><i class="ti ti-search" aria-hidden="true"></i>
+                    Lookup</button>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Mobile number</label>
+                <div class="input-with-btn">
+                  <input type="text" id="search-mobile" placeholder="e.g. 99214668">
+                  <button class="lookup-btn" onclick="doLookup('mobile')"><i class="ti ti-search"
+                      aria-hidden="true"></i> Lookup</button>
+                </div>
+              </div>
+            </div>
+            <div id="lookup-result" class="lookup-result" style="margin-top:12px">
+              <div class="lookup-result-label"><i class="ti ti-circle-check" aria-hidden="true"></i> Person record found
+              </div>
+              <div class="lookup-result-name" id="lr-name">—</div>
+              <div class="lookup-result-meta" id="lr-meta">—</div>
             </div>
           </div>
-          <div class="field-group">
-            <label>Mobile number</label>
-            <div class="input-with-btn">
-              <input type="text" id="search-mobile" placeholder="e.g. 99214668">
-              <button class="lookup-btn" onclick="doLookup('mobile')"><i class="ti ti-search" aria-hidden="true"></i> Lookup</button>
+          <div class="action-row">
+            <div style="font-size:12px;color:var(--color-text-secondary)">Skip lookup to register a new person</div>
+            <button class="btn-primary" onclick="goStep(2)">Continue <i class="ti ti-arrow-right"
+                aria-hidden="true"></i></button>
+          </div>
+        </div>
+
+        <div id="panel-2" style="display:none">
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-badge badge-person">P</div>
+              <span class="section-title">Personal information</span>
+              <span id="person-status-pill" class="status-pill pill-new">New record</span>
+            </div>
+
+            <div class="lookup-result show" id="prefill-banner" style="display:none!important;margin-bottom:12px">
+              <div class="lookup-result-label">Pre-filled from existing record — review and confirm</div>
+            </div>
+
+            <div class="field-grid" style="margin-bottom:12px">
+              <div class="field-group">
+                <label>Civil number <span class="req">*</span></label>
+                <input type="text" id="civil" placeholder="10753522" value="">
+              </div>
+              <div class="field-group">
+                <label>Full name (English) <span class="req">*</span></label>
+                <input type="text" id="name-en" placeholder="MAYA AWADH RASHID AL KINDI">
+              </div>
+              <div class="field-group">
+                <label>Full name (Arabic)</label>
+                <input type="text" id="name-ar" placeholder="مياء بنت عوض بن راشد الكندية" dir="rtl">
+              </div>
+              <div class="field-group">
+                <label>Date of birth <span class="req">*</span></label>
+                <input type="date" id="dob">
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="field-grid" style="margin-top:12px;margin-bottom:12px">
+              <div class="field-group">
+                <label>Gender <span class="req">*</span></label>
+                <div class="toggle-group" id="gender-group">
+                  <button class="toggle-btn" onclick="pick('gender','MALE',this)">Male</button>
+                  <button class="toggle-btn" onclick="pick('gender','FEMALE',this)">Female</button>
+                  <button class="toggle-btn" onclick="pick('gender','OTHER',this)">Other</button>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Marital status</label>
+                <script src="assets/js/unified_employee_registration.js"></script>
+                <select id="speciality">
+                  <option value="">— select —</option>
+                  <option>General Practice</option>
+                  <option>Paediatrics</option>
+                  <option>Surgery</option>
+                  <option>Radiology</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label>Budget</label>
+                <select id="budget">
+                  <option value="">— select —</option>
+                  <option>Ministry</option>
+                  <option>Self-funded</option>
+                  <option>Project</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label>Grade</label>
+                <select id="grade">
+                  <option value="">— select —</option>
+                  <option>Grade 1</option>
+                  <option>Grade 2</option>
+                  <option>Grade 3</option>
+                  <option>Grade 4</option>
+                </select>
+              </div>
             </div>
           </div>
-        </div>
-        <div id="lookup-result" class="lookup-result" style="margin-top:12px">
-          <div class="lookup-result-label"><i class="ti ti-circle-check" aria-hidden="true"></i> Person record found</div>
-          <div class="lookup-result-name" id="lr-name">—</div>
-          <div class="lookup-result-meta" id="lr-meta">—</div>
-        </div>
-      </div>
-      <div class="action-row">
-        <div style="font-size:12px;color:var(--color-text-secondary)">Skip lookup to register a new person</div>
-        <button class="btn-primary" onclick="goStep(2)">Continue <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
-      </div>
-    </div>
 
-    <div id="panel-2" style="display:none">
-      <div class="section-card">
-        <div class="section-header">
-          <div class="section-badge badge-person">P</div>
-          <span class="section-title">Personal information</span>
-          <span id="person-status-pill" class="status-pill pill-new">New record</span>
-        </div>
-
-        <div class="lookup-result show" id="prefill-banner" style="display:none!important;margin-bottom:12px">
-          <div class="lookup-result-label">Pre-filled from existing record — review and confirm</div>
-        </div>
-
-        <div class="field-grid" style="margin-bottom:12px">
-          <div class="field-group">
-            <label>Civil number <span class="req">*</span></label>
-            <input type="text" id="civil" placeholder="10753522" value="">
-          </div>
-          <div class="field-group">
-            <label>Full name (English) <span class="req">*</span></label>
-            <input type="text" id="name-en" placeholder="MAYA AWADH RASHID AL KINDI">
-          </div>
-          <div class="field-group">
-            <label>Full name (Arabic)</label>
-            <input type="text" id="name-ar" placeholder="مياء بنت عوض بن راشد الكندية" dir="rtl">
-          </div>
-          <div class="field-group">
-            <label>Date of birth <span class="req">*</span></label>
-            <input type="date" id="dob">
+          <div class="action-row">
+            <button class="btn-secondary" onclick="goStep(2)"><i class="ti ti-arrow-left" aria-hidden="true"></i>
+              Back</button>
+            <button class="btn-primary" onclick="goStep(4)">Review &amp; submit <i class="ti ti-arrow-right"
+                aria-hidden="true"></i></button>
           </div>
         </div>
 
-        <div class="divider"></div>
-
-        <div class="field-grid" style="margin-top:12px;margin-bottom:12px">
-          <div class="field-group">
-            <label>Gender <span class="req">*</span></label>
-            <div class="toggle-group" id="gender-group">
-              <button class="toggle-btn" onclick="pick('gender','MALE',this)">Male</button>
-              <button class="toggle-btn" onclick="pick('gender','FEMALE',this)">Female</button>
-              <button class="toggle-btn" onclick="pick('gender','OTHER',this)">Other</button>
+        <div id="panel-4" style="display:none">
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-badge badge-person"><i class="ti ti-user" aria-hidden="true"></i></div>
+              <span class="section-title">Personal summary</span>
+              <button style="margin-left:auto;background:none;border:none;font-size:12px;color:#185FA5;cursor:pointer"
+                onclick="goStep(2)"><i class="ti ti-edit" aria-hidden="true"></i> Edit</button>
             </div>
+            <div id="review-personal" class="field-grid" style="font-size:13px;gap:8px 12px"></div>
           </div>
-          <div class="field-group">
-            <label>Marital status</label>
-            <div class="toggle-group" id="marital-group">
-              <button class="toggle-btn" onclick="pick('marital','SINGLE',this)">Single</button>
-              <button class="toggle-btn" onclick="pick('marital','MARRIED',this)">Married</button>
-              <button class="toggle-btn" onclick="pick('marital','DIVORCED',this)">Divorced</button>
-              <button class="toggle-btn" onclick="pick('marital','WIDOWED',this)">Widowed</button>
+
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-badge badge-employee">E</div>
+              <span class="section-title">Employment summary</span>
+              <button style="margin-left:auto;background:none;border:none;font-size:12px;color:#185FA5;cursor:pointer"
+                onclick="goStep(3)"><i class="ti ti-edit" aria-hidden="true"></i> Edit</button>
             </div>
+            <div id="review-employment" class="field-grid" style="font-size:13px;gap:8px 12px"></div>
           </div>
-          <div class="field-group">
-            <label>Religion</label>
-            <select id="religion">
-              <option value="">— select —</option>
-              <option>Islam</option>
-              <option>Christianity</option>
-              <option>Other</option>
-            </select>
+
+          <div
+            style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem">
+            <i class="ti ti-info-circle" aria-hidden="true"></i> Submitting will create both a <strong>Person</strong>
+            record and a linked <strong>Employee</strong> record atomically. No partial saves.
           </div>
-          <div class="field-group">
-            <label>Nationality <span class="req">*</span></label>
-            <select id="nationality">
-              <option value="">— select —</option>
-              <option>Omani</option>
-              <option>Other</option>
-            </select>
+
+          <div class="action-row">
+            <button class="btn-secondary" onclick="goStep(3)"><i class="ti ti-arrow-left" aria-hidden="true"></i>
+              Back</button>
+            <button class="btn-primary" id="submit-btn" onclick="doSubmit()"><i class="ti ti-circle-check"
+                aria-hidden="true"></i> Register employee</button>
           </div>
         </div>
 
-        <div class="divider"></div>
-
-        <div class="field-grid-3" style="margin-top:12px">
-          <div class="field-group">
-            <label>Governorate</label>
-            <select id="governorate" onchange="updateWilayah(this.value)">
-              <option value="">— select —</option>
-              <option>Muscat</option>
-              <option>Dhofar</option>
-              <option>Batinah North</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label>Wilayah</label>
-            <select id="wilayah">
-              <option value="">— select governorate first —</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label>Locality</label>
-            <input type="text" id="locality" placeholder="Area / block">
-          </div>
-          <div class="field-group">
-            <label>Phone <span class="req">*</span></label>
-            <input type="tel" id="phone" placeholder="99214668">
-          </div>
-          <div class="field-group">
-            <label>Emergency phone</label>
-            <input type="tel" id="emergency-phone" placeholder="99214668">
-          </div>
-          <div class="field-group">
-            <label>Email</label>
-            <input type="email" id="email" placeholder="example@mail.com">
-          </div>
-        </div>
       </div>
 
-      <div class="action-row">
-        <button class="btn-secondary" onclick="goStep(1)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
-        <button class="btn-primary" onclick="goStep(3)">Next: Employment <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+      <div class="success-card" id="success-card">
+        <div class="success-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
+        <div class="success-title">Employee registered successfully</div>
+        <div class="success-meta">Person and employee records created and linked.</div>
+        <div class="ref-badge" id="success-ref">EMP-00412 · Civil 10753522</div>
+        <div style="margin-top:1rem;display:flex;gap:8px;justify-content:center">
+          <button class="btn-secondary"
+            onclick="sendPrompt('What should happen after employee registration — what screens or workflows come next?')">What
+            comes next? ↗</button>
+          <button class="btn-primary" onclick="resetForm()"><i class="ti ti-plus" aria-hidden="true"></i> Register
+            another</button>
+        </div>
       </div>
     </div>
 
-    <div id="panel-3" style="display:none">
-      <div class="section-card">
-        <div class="section-header">
-          <div class="section-badge badge-employee">E</div>
-          <span class="section-title">Employment details</span>
-        </div>
+    <script>
+      const state = { gender: null, marital: null, prefilled: false };
+      const wilayahs = { Muscat: ['Seeb', 'Muttrah', 'Bausher', 'Muscat'], Dhofar: ['Salalah', 'Thumrait', 'Mirbat'], BatinahNorth: ['Sohar', 'Shinas', 'Liwa'] };
 
-        <div class="field-grid" style="margin-bottom:12px">
-          <div class="field-group">
-            <label>Staff number <span class="req">*</span></label>
-            <input type="text" id="staff-num" placeholder="e.g. EMP-00412">
-          </div>
-          <div class="field-group">
-            <label>Mawred number</label>
-            <input type="text" id="mawred" placeholder="e.g. MW-2891">
-          </div>
-          <div class="field-group">
-            <label>Date of joining <span class="req">*</span></label>
-            <input type="date" id="join-date">
-          </div>
-          <div class="field-group">
-            <label>Staff type <span class="req">*</span></label>
-            <select id="staff-type">
-              <option value="">— select —</option>
-              <option>Permanent</option>
-              <option>Contract</option>
-              <option>Secondment</option>
-            </select>
-          </div>
-        </div>
+      function goStep(n) {
+        for (let i = 1; i <= 4; i++) {
+          const p = document.getElementById('panel-' + i);
+          if (p) p.style.display = (i === n ? 'block' : 'none');
+          const s = document.getElementById('s' + i);
+          if (s) {
+            s.classList.remove('active', 'done');
+            if (i < n) s.classList.add('done');
+            else if (i === n) s.classList.add('active');
+          }
+        }
+        if (n === 4) buildReview();
+      }
 
-        <div class="divider"></div>
+      function pick(type, val, btn) {
+        state[type] = val;
+        const group = document.getElementById(type + '-group');
+        group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
 
-        <div class="field-grid" style="margin-top:12px">
-          <div class="field-group">
-            <label>Designation <span class="req">*</span></label>
-            <select id="designation">
-              <option value="">— select —</option>
-              <option>Nurse</option>
-              <option>Doctor</option>
-              <option>Technician</option>
-              <option>Administrator</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label>Speciality</label>
-            <select id="speciality">
-              <option value="">— select —</option>
-              <option>General Practice</option>
-              <option>Paediatrics</option>
-              <option>Surgery</option>
-              <option>Radiology</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label>Budget</label>
-            <select id="budget">
-              <option value="">— select —</option>
-              <option>Ministry</option>
-              <option>Self-funded</option>
-              <option>Project</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label>Grade</label>
-            <select id="grade">
-              <option value="">— select —</option>
-              <option>Grade 1</option>
-              <option>Grade 2</option>
-              <option>Grade 3</option>
-              <option>Grade 4</option>
-            </select>
-          </div>
-        </div>
-      </div>
+      function doLookup(type) {
+        const val = document.getElementById('search-' + type).value.trim();
+        if (!val) return;
+        const mockCivil = '10753522', mockMobile = '99214668';
+        const found = (type === 'civil' && val === mockCivil) || (type === 'mobile' && val === mockMobile);
+        const res = document.getElementById('lookup-result');
+        if (found) {
+          document.getElementById('lr-name').textContent = 'Maya Awadh Rashid Al Kindi';
+          document.getElementById('lr-meta').textContent = 'Civil: 10753522 · DOB: 23/03/1980 · Female · Omani';
+          res.classList.add('show');
+          state.prefilled = true;
+          prefillPersonal();
+        } else {
+          res.classList.remove('show');
+          res.innerHTML = '<div class="lookup-result-label" style="color:#A32D2D"><i class="ti ti-alert-circle"></i> No record found — a new person will be created</div>';
+          res.style.background = '#FCEBEB'; res.style.borderColor = '#F7C1C1';
+          res.classList.add('show');
+        }
+      }
 
-      <div class="action-row">
-        <button class="btn-secondary" onclick="goStep(2)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
-        <button class="btn-primary" onclick="goStep(4)">Review &amp; submit <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
-      </div>
-    </div>
+      function prefillPersonal() {
+        document.getElementById('civil').value = '10753522';
+        document.getElementById('name-en').value = 'MAYA AWADH RASHID AL KINDI';
+        document.getElementById('name-ar').value = 'مياء بنت عوض بن راشد الكندية';
+        document.getElementById('dob').value = '1980-03-23';
+        document.getElementById('phone').value = '99214668';
+        document.getElementById('emergency-phone').value = '99214668';
+        document.getElementById('religion').value = 'Islam';
+        document.getElementById('nationality').value = 'Omani';
+        pick('gender', 'FEMALE', document.querySelector('#gender-group .toggle-btn:nth-child(2)'));
+        pick('marital', 'MARRIED', document.querySelector('#marital-group .toggle-btn:nth-child(2)'));
+        const pill = document.getElementById('person-status-pill');
+        pill.textContent = 'Existing record'; pill.className = 'status-pill pill-existing';
+      }
 
-    <div id="panel-4" style="display:none">
-      <div class="section-card">
-        <div class="section-header">
-          <div class="section-badge badge-person"><i class="ti ti-user" aria-hidden="true"></i></div>
-          <span class="section-title">Personal summary</span>
-          <button style="margin-left:auto;background:none;border:none;font-size:12px;color:#185FA5;cursor:pointer" onclick="goStep(2)"><i class="ti ti-edit" aria-hidden="true"></i> Edit</button>
-        </div>
-        <div id="review-personal" class="field-grid" style="font-size:13px;gap:8px 12px"></div>
-      </div>
+      function updateWilayah(gov) {
+        const sel = document.getElementById('wilayah');
+        sel.innerHTML = '<option value="">— select —</option>';
+        const key = gov.replace(' ', '');
+        if (wilayahs[key]) { wilayahs[key].forEach(w => { const o = document.createElement('option'); o.textContent = w; sel.appendChild(o); }) }
+      }
 
-      <div class="section-card">
-        <div class="section-header">
-          <div class="section-badge badge-employee">E</div>
-          <span class="section-title">Employment summary</span>
-          <button style="margin-left:auto;background:none;border:none;font-size:12px;color:#185FA5;cursor:pointer" onclick="goStep(3)"><i class="ti ti-edit" aria-hidden="true"></i> Edit</button>
-        </div>
-        <div id="review-employment" class="field-grid" style="font-size:13px;gap:8px 12px"></div>
-      </div>
+      function rv(id) { return document.getElementById(id)?.value || '—' }
 
-      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem">
-        <i class="ti ti-info-circle" aria-hidden="true"></i> Submitting will create both a <strong>Person</strong> record and a linked <strong>Employee</strong> record atomically. No partial saves.
-      </div>
+      function buildReview() {
+        const rp = document.getElementById('review-personal');
+        const re = document.getElementById('review-employment');
+        const pFields = [
+          ['Civil number', rv('civil')], ['Full name (EN)', rv('name-en')],
+          ['Full name (AR)', rv('name-ar') || '—'], ['Date of birth', rv('dob')],
+          ['Gender', state.gender || '—'], ['Marital status', state.marital || '—'],
+          ['Religion', rv('religion')], ['Nationality', rv('nationality')],
+          ['Phone', rv('phone')], ['Email', rv('email') || '—']
+        ];
+        const eFields = [
+          ['Staff number', rv('staff-num')], ['Mawred number', rv('mawred') || '—'],
+          ['Date of joining', rv('join-date')], ['Staff type', rv('staff-type')],
+          ['Designation', rv('designation')], ['Speciality', rv('speciality') || '—'],
+          ['Budget', rv('budget') || '—'], ['Grade', rv('grade') || '—']
+        ];
+        rp.innerHTML = pFields.map(([l, v]) => `<div class="field-group"><label>${l}</label><div style="font-size:13px;color:var(--color-text-primary);padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)">${v}</div></div>`).join('');
+        re.innerHTML = eFields.map(([l, v]) => `<div class="field-group"><label>${l}</label><div style="font-size:13px;color:var(--color-text-primary);padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)">${v}</div></div>`).join('');
+      }
 
-      <div class="action-row">
-        <button class="btn-secondary" onclick="goStep(3)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
-        <button class="btn-primary" id="submit-btn" onclick="doSubmit()"><i class="ti ti-circle-check" aria-hidden="true"></i> Register employee</button>
-      </div>
-    </div>
+      function doSubmit() {
+        const btn = document.getElementById('submit-btn');
+        btn.disabled = true; btn.textContent = 'Registering…';
+        setTimeout(() => {
+          document.getElementById('form-main').style.display = 'none';
+          const sc = document.getElementById('success-card');
+          sc.classList.add('show');
+          const sn = rv('staff-num') || 'EMP-XXXX', cn = rv('civil') || '—';
+          document.getElementById('success-ref').textContent = sn + ' · Civil ' + cn;
+          document.querySelectorAll('.step').forEach(s => { s.classList.remove('active'); s.classList.add('done'); });
+        }, 900);
+      }
 
-  </div>
+      function resetForm() {
+        document.getElementById('form-main').style.display = 'block';
+        document.getElementById('success-card').classList.remove('show');
+        document.querySelectorAll('input').forEach(i => i.value = '');
+        document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+        document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('lookup-result').classList.remove('show');
+        state.gender = null; state.marital = null; state.prefilled = false;
+        const pill = document.getElementById('person-status-pill');
+        pill.textContent = 'New record'; pill.className = 'status-pill pill-new';
+        goStep(1);
+      }
+    </script>
 
-  <div class="success-card" id="success-card">
-    <div class="success-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
-    <div class="success-title">Employee registered successfully</div>
-    <div class="success-meta">Person and employee records created and linked.</div>
-    <div class="ref-badge" id="success-ref">EMP-00412 · Civil 10753522</div>
-    <div style="margin-top:1rem;display:flex;gap:8px;justify-content:center">
-      <button class="btn-secondary" onclick="sendPrompt('What should happen after employee registration — what screens or workflows come next?')">What comes next? ↗</button>
-      <button class="btn-primary" onclick="resetForm()"><i class="ti ti-plus" aria-hidden="true"></i> Register another</button>
-    </div>
-  </div>
-</div>
-
-<script>
-const state={gender:null,marital:null,prefilled:false};
-const wilayahs={Muscat:['Seeb','Muttrah','Bausher','Muscat'],Dhofar:['Salalah','Thumrait','Mirbat'],BatinahNorth:['Sohar','Shinas','Liwa']};
-
-function goStep(n){
-  for(let i=1;i<=4;i++){
-    const p=document.getElementById('panel-'+i);
-    if(p) p.style.display=(i===n?'block':'none');
-    const s=document.getElementById('s'+i);
-    if(s){
-      s.classList.remove('active','done');
-      if(i<n) s.classList.add('done');
-      else if(i===n) s.classList.add('active');
-    }
-  }
-  if(n===4) buildReview();
-}
-
-function pick(type,val,btn){
-  state[type]=val;
-  const group=document.getElementById(type+'-group');
-  group.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-function doLookup(type){
-  const val=document.getElementById('search-'+type).value.trim();
-  if(!val) return;
-  const mockCivil='10753522', mockMobile='99214668';
-  const found=(type==='civil'&&val===mockCivil)||(type==='mobile'&&val===mockMobile);
-  const res=document.getElementById('lookup-result');
-  if(found){
-    document.getElementById('lr-name').textContent='Maya Awadh Rashid Al Kindi';
-    document.getElementById('lr-meta').textContent='Civil: 10753522 · DOB: 23/03/1980 · Female · Omani';
-    res.classList.add('show');
-    state.prefilled=true;
-    prefillPersonal();
-  } else {
-    res.classList.remove('show');
-    res.innerHTML='<div class="lookup-result-label" style="color:#A32D2D"><i class="ti ti-alert-circle"></i> No record found — a new person will be created</div>';
-    res.style.background='#FCEBEB';res.style.borderColor='#F7C1C1';
-    res.classList.add('show');
-  }
-}
-
-function prefillPersonal(){
-  document.getElementById('civil').value='10753522';
-  document.getElementById('name-en').value='MAYA AWADH RASHID AL KINDI';
-  document.getElementById('name-ar').value='مياء بنت عوض بن راشد الكندية';
-  document.getElementById('dob').value='1980-03-23';
-  document.getElementById('phone').value='99214668';
-  document.getElementById('emergency-phone').value='99214668';
-  document.getElementById('religion').value='Islam';
-  document.getElementById('nationality').value='Omani';
-  pick('gender','FEMALE',document.querySelector('#gender-group .toggle-btn:nth-child(2)'));
-  pick('marital','MARRIED',document.querySelector('#marital-group .toggle-btn:nth-child(2)'));
-  const pill=document.getElementById('person-status-pill');
-  pill.textContent='Existing record';pill.className='status-pill pill-existing';
-}
-
-function updateWilayah(gov){
-  const sel=document.getElementById('wilayah');
-  sel.innerHTML='<option value="">— select —</option>';
-  const key=gov.replace(' ','');
-  if(wilayahs[key]){wilayahs[key].forEach(w=>{const o=document.createElement('option');o.textContent=w;sel.appendChild(o);})}
-}
-
-function rv(id){return document.getElementById(id)?.value||'—'}
-
-function buildReview(){
-  const rp=document.getElementById('review-personal');
-  const re=document.getElementById('review-employment');
-  const pFields=[
-    ['Civil number',rv('civil')],['Full name (EN)',rv('name-en')],
-    ['Full name (AR)',rv('name-ar')||'—'],['Date of birth',rv('dob')],
-    ['Gender',state.gender||'—'],['Marital status',state.marital||'—'],
-    ['Religion',rv('religion')],['Nationality',rv('nationality')],
-    ['Phone',rv('phone')],['Email',rv('email')||'—']
-  ];
-  const eFields=[
-    ['Staff number',rv('staff-num')],['Mawred number',rv('mawred')||'—'],
-    ['Date of joining',rv('join-date')],['Staff type',rv('staff-type')],
-    ['Designation',rv('designation')],['Speciality',rv('speciality')||'—'],
-    ['Budget',rv('budget')||'—'],['Grade',rv('grade')||'—']
-  ];
-  rp.innerHTML=pFields.map(([l,v])=>`<div class="field-group"><label>${l}</label><div style="font-size:13px;color:var(--color-text-primary);padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)">${v}</div></div>`).join('');
-  re.innerHTML=eFields.map(([l,v])=>`<div class="field-group"><label>${l}</label><div style="font-size:13px;color:var(--color-text-primary);padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)">${v}</div></div>`).join('');
-}
-
-function doSubmit(){
-  const btn=document.getElementById('submit-btn');
-  btn.disabled=true;btn.textContent='Registering…';
-  setTimeout(()=>{
-    document.getElementById('form-main').style.display='none';
-    const sc=document.getElementById('success-card');
-    sc.classList.add('show');
-    const sn=rv('staff-num')||'EMP-XXXX', cn=rv('civil')||'—';
-    document.getElementById('success-ref').textContent=sn+' · Civil '+cn;
-    document.querySelectorAll('.step').forEach(s=>{s.classList.remove('active');s.classList.add('done');});
-  },900);
-}
-
-function resetForm(){
-  document.getElementById('form-main').style.display='block';
-  document.getElementById('success-card').classList.remove('show');
-  document.querySelectorAll('input').forEach(i=>i.value='');
-  document.querySelectorAll('select').forEach(s=>s.selectedIndex=0);
-  document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('lookup-result').classList.remove('show');
-  state.gender=null;state.marital=null;state.prefilled=false;
-  const pill=document.getElementById('person-status-pill');
-  pill.textContent='New record';pill.className='status-pill pill-new';
-  goStep(1);
-}
-</script>
-
-</div> <!-- Close .form-container -->
+  </div> <!-- Close .form-container -->
 </body>
+
 </html>
